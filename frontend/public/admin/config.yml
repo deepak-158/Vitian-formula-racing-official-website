@@ -1,6 +1,7 @@
 backend:
   name: git-gateway
-  branch: main # Branch to update (optional; defaults to master)
+  branch: main
+local_backend: true # Enable local backend for development
 
 media_folder: "public/images/team" # Media files will be stored in the repo under public/images/team
 public_folder: "/images/team" # The src attribute for uploaded media will begin with /images/team
@@ -8,14 +9,19 @@ public_folder: "/images/team" # The src attribute for uploaded media will begin 
 collections:
   - name: "team"
     label: "Team Members"
-    folder: "src/data/team"
-    create: true
-    extension: "json"
+    folder: "src/data"
     format: "json"
+    create: true
+    slug: "{{slug}}"
     identifier_field: "name"
+    extension: "json"
     editor:
       preview: false
-    fields:
+    files:
+      - label: "Team Members"
+        name: "members"
+        file: "src/data/members.json"
+        fields:
       - {label: "ID", name: "id", widget: "string"}
       - {label: "Name", name: "name", widget: "string"}
       - {label: "Role", name: "role", widget: "string"}
