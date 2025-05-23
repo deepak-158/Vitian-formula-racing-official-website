@@ -50,25 +50,40 @@ const ContactPage: React.FC = () => {
     setSubmitStatus({ type: null, message: '' });
 
     try {
+      // Get the form element
       const form = e.target as HTMLFormElement;
-      const formData = new FormData(form);
       
-      // Remove the file if no image was selected
-      if (!formState.image) {
-        formData.delete('image');
+      // Create FormData object
+      const data = new FormData(form);
+      
+      // Make sure form name is included
+      data.append('form-name', 'contact');
+      
+      // Handle the file upload with the correct field name
+      if (formState.image) {
+        data.delete('image'); // Remove the old file field
+        data.append('file-upload', formState.image); // Add with the correct name
       }
 
-      await fetch('/', {
+      // Submit to Netlify
+      const response = await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'multipart/form-data' },
-        body: formData,
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: data
       });
 
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      // Show success message
       setSubmitStatus({
         type: 'success',
         message: 'Thank you for your message! We will get back to you soon.'
       });
-      
+
       // Reset form
       setFormState({
         name: '',
@@ -79,12 +94,13 @@ const ContactPage: React.FC = () => {
         image: null
       });
 
-      // Reset the file input
+      // Reset file input
       const fileInput = form.querySelector('input[type="file"]') as HTMLInputElement;
       if (fileInput) {
         fileInput.value = '';
       }
     } catch (error) {
+      console.error('Form submission error:', error);
       setSubmitStatus({
         type: 'error',
         message: 'Something went wrong. Please try again later.'
@@ -304,7 +320,9 @@ const ContactPage: React.FC = () => {
                 method="POST"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
+                netlify-honeypot="bot-field"
                 encType="multipart/form-data"
+                action="/"
                 onSubmit={handleSubmit}
                 style={{
                   backgroundColor: 'white',
@@ -502,8 +520,8 @@ const ContactPage: React.FC = () => {
                   </label>
                   <input
                     type="file"
-                    id="image"
-                    name="image"
+                    id="file-upload"
+                    name="file-upload"
                     accept="image/*"
                     onChange={handleFileChange}
                     style={{
