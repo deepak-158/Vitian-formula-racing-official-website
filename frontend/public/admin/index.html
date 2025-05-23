@@ -4,10 +4,208 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vitian Formula Racing - Content Manager</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>  <style>
+    /* Add some basic styling to show debugging panel */
+    .debug-panel {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 9999;
+      max-width: 300px;
+      max-height: 200px;
+      overflow: auto;
+    }
+    .debug-panel button {
+      margin: 5px;
+      padding: 5px 10px;
+    }
+    .cms-status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #e6f4ea;
+      border: 1px solid #34a853;
+      color: #1e8e3e;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 9998;
+      display: none;
+    }
+    .cms-status.error {
+      background: #fce8e6;
+      border-color: #ea4335;
+      color: #c5221f;
+    }
+    .help-link {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: #f8f9fa;
+      border: 1px solid #dadce0;
+      padding: 5px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #1a73e8;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      z-index: 9997;
+      display: flex;
+      align-items: center;
+    }
+    .help-link:hover {
+      background: #e8f0fe;
+    }
+    .help-link svg {
+      margin-right: 5px;
+    }
+  </style>
 </head>
-<body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
+<body>  <!-- Include the script that builds the page and powers Netlify CMS -->
   <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
+  
+  <!-- Status notification -->
+  <div id="cms-status" class="cms-status">CMS Status</div>
+  
+  <!-- Help link -->
+  <a href="./guide.md" target="_blank" class="help-link">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+    CMS Usage Guide
+  </a>
+  
+  <!-- Debug panel for testing -->
+  <div class="debug-panel">
+    <button id="btn-reload-cms">Reload CMS</button>
+    <button id="btn-clear-cache">Clear Cache</button>
+    <button id="btn-refresh-data">Refresh Data</button>
+    <div id="debug-log"></div>
+  </div>
+  
+  <!-- Custom preview templates -->
+  <script src="./preview-templates.js"></script>
+  
+  <script>
+    // Register event listeners once CMS is ready
+    window.addEventListener('load', function() {
+      // Add debugging utilities
+      const debugLog = document.getElementById('debug-log');
+      const logMessage = (msg) => {
+        const time = new Date().toLocaleTimeString();
+        debugLog.innerHTML = `${time}: ${msg}<br>` + debugLog.innerHTML;
+      };
+      
+      // Status notification
+      const cmsStatus = document.getElementById('cms-status');
+      const showStatus = (message, isError = false) => {
+        cmsStatus.textContent = message;
+        cmsStatus.style.display = 'block';
+        
+        if (isError) {
+          cmsStatus.classList.add('error');
+        } else {
+          cmsStatus.classList.remove('error');
+        }
+        
+        setTimeout(() => {
+          cmsStatus.style.display = 'none';
+        }, 3000);
+      };
+      
+      // Add reload functionality
+      document.getElementById('btn-reload-cms').addEventListener('click', function() {
+        logMessage('Reloading CMS...');
+        // Force reload without cache
+        window.location.reload(true);
+      });
+      
+      // Add cache clearing functionality
+      document.getElementById('btn-clear-cache').addEventListener('click', function() {
+        logMessage('Clearing local cache...');
+        localStorage.clear();
+        sessionStorage.clear();
+        logMessage('Cache cleared. Reload to see changes.');
+        showStatus('Cache cleared successfully');
+      });
+      
+      // Add data refresh functionality
+      document.getElementById('btn-refresh-data').addEventListener('click', function() {
+        logMessage('Refreshing data files...');
+        fetch('/api/refresh-data', { method: 'POST' })
+          .then(response => {
+            if (response.ok) {
+              logMessage('Data refresh request sent');
+              showStatus('Data refreshed successfully');
+            } else {
+              logMessage(`Error refreshing data: ${response.status}`);
+              showStatus('Error refreshing data', true);
+            }
+          })
+          .catch(error => {
+            logMessage(`Error: ${error.message}`);
+            showStatus('Error refreshing data', true);
+          });
+      });
+      
+      // Log when CMS is initialized
+      if (window.CMS) {
+        logMessage('CMS initialized');
+        
+        // Register event hooks for CMS operations
+        window.CMS.registerEventListener({
+          name: 'preSave',
+          handler: ({entry}) => {
+            logMessage(`Saving entry: ${entry.get('slug')}`);
+            return entry;
+          }
+        });
+        
+        window.CMS.registerEventListener({
+          name: 'postSave',
+          handler: ({entry}) => {
+            logMessage(`Entry saved: ${entry.get('slug')}`);
+            // Refresh the public data files
+            fetch('/api/refresh-data', { method: 'POST' })
+              .then(response => {
+                if (response.ok) {
+                  logMessage('Data refreshed after save');
+                } else {
+                  logMessage(`Error refreshing data: ${response.status}`);
+                }
+              })
+              .catch(error => {
+                logMessage(`Error: ${error.message}`);
+              });
+          }
+        });
+      } else {
+        logMessage('Error: CMS not initialized');
+      }
+      
+      // Handle Netlify Identity
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', user => {
+          if (!user) {
+            logMessage('No user logged in, showing login');
+            window.netlifyIdentity.on('login', () => {
+              logMessage('User logged in');
+              showStatus('Logged in successfully');
+            });
+          } else {
+            logMessage(`Logged in as: ${user.email}`);
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

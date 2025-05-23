@@ -28,10 +28,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && node scripts/copy-data-files.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "rebuild-css": "npx tailwindcss -i ./src/index.css -o ./src/output.css && npm start"
+    "rebuild-css": "npx tailwindcss -i ./src/index.css -o ./src/output.css && npm start",
+    "copy-data": "node scripts/copy-data-files.js",
+    "dev": "npm run copy-data && react-scripts start"
   },
   "eslintConfig": {
     "extends": [
