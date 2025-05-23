@@ -7,34 +7,118 @@ const TeamMemberPreview = ({ entry }) => {
   const data = entry.getIn(['data']).toJS();
   
   return (
-    <div style={{ maxWidth: '400px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
-      <h2 style={{ borderBottom: '1px solid #ccc', paddingBottom: '8px' }}>Member Preview</h2>
-      <div style={{ display: 'flex', marginBottom: '20px' }}>
-        <div style={{ width: '120px', height: '120px', overflow: 'hidden', borderRadius: '60px', marginRight: '20px' }}>
+    <div style={{ maxWidth: '400px', margin: '0 auto', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ 
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        overflow: 'hidden',
+        marginBottom: '2rem'
+      }}>
+        <div style={{
+          width: '100%',
+          height: '300px',
+          overflow: 'hidden',
+          backgroundColor: '#f3f4f6',
+          position: 'relative'
+        }}>
           <img 
-            src={data.image_url || 'https://via.placeholder.com/150'} 
+            src={data.image_url || 'https://via.placeholder.com/400x400'} 
             alt={data.name} 
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover'
+            }}
           />
         </div>
-        <div>
-          <h3 style={{ margin: '0 0 5px 0', color: '#333' }}>{data.name || 'Name'}</h3>
-          <p style={{ margin: '0 0 10px 0', fontWeight: 'bold', color: '#666' }}>{data.role || 'Role'}</p>
-          <div style={{ display: 'flex', gap: '10px' }}>
+        
+        <div style={{ padding: '1.5rem' }}>
+          <h3 style={{ 
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            color: '#111827',
+            marginBottom: '0.5rem'
+          }}>
+            {data.name || 'Member Name'}
+          </h3>
+          
+          <p style={{ 
+            fontSize: '1rem',
+            color: 'var(--color-primary-600, #e41f1a)',
+            marginBottom: '1rem',
+            fontWeight: '500'
+          }}>
+            {data.role || 'Role'}
+          </p>
+          
+          <p style={{ 
+            color: '#4b5563',
+            fontSize: '0.875rem',
+            lineHeight: '1.5',
+            marginBottom: '1.5rem'
+          }}>
+            {data.bio || 'Member bio will appear here.'}
+          </p>
+          
+          <div style={{ 
+            display: 'flex',
+            gap: '1rem',
+            marginTop: 'auto'
+          }}>
             {data.social_links?.linkedin && (
-              <a href={data.social_links.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+              <a 
+                href={data.social_links.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: '#666',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem'
+                }}
+              >
+                LinkedIn
+              </a>
             )}
             {data.social_links?.twitter && (
-              <a href={data.social_links.twitter} target="_blank" rel="noreferrer">Twitter</a>
+              <a 
+                href={data.social_links.twitter}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: '#666',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem'
+                }}
+              >
+                Twitter/X
+              </a>
             )}
             {data.social_links?.github && (
-              <a href={data.social_links.github} target="_blank" rel="noreferrer">GitHub</a>
+              <a 
+                href={data.social_links.github}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: '#666',
+                  textDecoration: 'none',
+                  fontSize: '0.875rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.25rem'
+                }}
+              >
+                GitHub
+              </a>
             )}
           </div>
         </div>
-      </div>
-      <div style={{ backgroundColor: '#f7f7f7', padding: '15px', borderRadius: '5px' }}>
-        <p style={{ margin: '0', lineHeight: '1.5' }}>{data.bio || 'Bio information will appear here.'}</p>
       </div>
     </div>
   );
