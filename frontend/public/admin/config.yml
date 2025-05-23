@@ -13,6 +13,8 @@ collections:
     extension: "json"
     format: "json"
     identifier_field: "name"
+    editor:
+      preview: false
     fields:
       - {label: "ID", name: "id", widget: "string"}
       - {label: "Name", name: "name", widget: "string"}
