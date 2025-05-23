@@ -1,75 +1,71 @@
-// Netlify function to update all types of data
 const fs = require('fs');
 const path = require('path');
 const { promisify } = require('util');
 
 const writeFile = promisify(fs.writeFile);
-const readFile = promisify(fs.readFile);
 
-exports.handler = async function(event, context) {
+// This function handles data updates from Netlify CMS
+exports.handler = async (event, context) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' })
+      body: JSON.stringify({ message: 'Method Not Allowed' })
     };
   }
 
   try {
-    // Parse the form data
+    // Parse the request body
     const formData = new URLSearchParams(event.body);
     const dataType = formData.get('dataType');
-    const jsonData = formData.get('data');
-    
-    if (!dataType || !jsonData) {
+    const data = JSON.parse(formData.get('data'));
+
+    if (!dataType || !data) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Missing dataType or data' })
+        body: JSON.stringify({ message: 'Missing dataType or data parameter' })
       };
     }
 
-    // Validate dataType against allowed types
-    const allowedTypes = [
-      'members', 'achievements', 'events', 'gallery', 
-      'merchandise', 'news', 'projects', 'racing-journey', 
-      'sponsors', 'team-info'
-    ];
+    // Validate the dataType to prevent directory traversal attacks
+    const validDataTypes = ['members', 'achievements', 'events', 'gallery', 
+                          'merchandise', 'racing-journey', 'sponsors', 'team-info'];
     
-    if (!allowedTypes.includes(dataType)) {
+    if (!validDataTypes.includes(dataType)) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid dataType' })
+        body: JSON.stringify({ message: 'Invalid dataType parameter' })
       };
     }
 
-    // Parse the JSON data
-    const data = JSON.parse(jsonData);
+    // Define the path to the data file
+    const filePath = path.join(process.cwd(), 'public', 'data', `${dataType}.json`);
+    
+    // Also update the source data file in src/data
+    const srcFilePath = path.join(process.cwd(), 'src', 'data', `${dataType}.json`);
 
-    // Write to both source and public locations
-    const srcFilePath = path.join(__dirname, `../../src/data/${dataType}.json`);
-    const publicFilePath = path.join(__dirname, `../../public/data/${dataType}.json`);
+    // Write the updated data to the public data file
+    await writeFile(filePath, JSON.stringify(data, null, 2));
     
-    const formattedData = JSON.stringify(data, null, 2);
-    
-    // Write to src/data
-    await writeFile(srcFilePath, formattedData);
-    
-    // Write to public/data
-    await writeFile(publicFilePath, formattedData);
-    
+    // Write the updated data to the source data file
+    await writeFile(srcFilePath, JSON.stringify(data, null, 2));
+
     return {
       statusCode: 200,
       body: JSON.stringify({ 
-        success: true, 
         message: `${dataType} data updated successfully`,
         timestamp: new Date().toISOString()
       })
     };
   } catch (error) {
     console.error('Error updating data:', error);
+    
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to update data', details: error.message })
+      body: JSON.stringify({ 
+        message: 'Error updating data',
+        error: error.message 
+      })
     };
   }
 };

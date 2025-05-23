@@ -3,12 +3,10 @@ import dynamicDataService from './dynamicDataService';
 
 // Static imports for fallback and TypeScript type checking
 import membersData from '../data/members.json';
-import projectsData from '../data/projects.json';
 import eventsData from '../data/events.json';
 import sponsorsData from '../data/sponsors.json';
 import galleryData from '../data/gallery.json';
 import merchandiseData from '../data/merchandise.json';
-import newsData from '../data/news.json';
 import achievementsData from '../data/achievements.json';
 import racingJourneyData from '../data/racing-journey.json';
 import teamInfoData from '../data/team-info.json';
@@ -152,12 +150,10 @@ const dataService = {
   // Helper to check data store status
   _dataStore: {
     members: null,
-    projects: null,
     events: null,
     sponsors: null,
     gallery: null,
     merchandise: null,
-    news: null,
     achievements: null,
     racingJourney: null,
     teamInfo: null
@@ -172,16 +168,6 @@ const dataService = {
       return dataService._dataStore.members || membersData;
     }
     return membersData;
-  },
-
-  _loadProjects: async () => {
-    if (USE_DYNAMIC_LOADING) {
-      if (!dataService._dataStore.projects) {
-        dataService._dataStore.projects = await dynamicDataService.getProjects();
-      }
-      return dataService._dataStore.projects || projectsData;
-    }
-    return projectsData;
   },
 
   _loadEvents: async () => {
@@ -222,16 +208,6 @@ const dataService = {
       return dataService._dataStore.merchandise || merchandiseData;
     }
     return merchandiseData;
-  },
-
-  _loadNews: async () => {
-    if (USE_DYNAMIC_LOADING) {
-      if (!dataService._dataStore.news) {
-        dataService._dataStore.news = await dynamicDataService.getNews();
-      }
-      return dataService._dataStore.news || newsData;
-    }
-    return newsData;
   },
 
   _loadAchievements: async () => {
@@ -277,26 +253,27 @@ const dataService = {
   
   // Project methods
   getAllProjects: async (): Promise<Project[]> => {
-    const data = await dataService._loadProjects();
-    return data as Project[];
+    return await dynamicDataService.getProjects() as Project[];
   },
   
   getProjectById: async (id: string): Promise<Project | undefined> => {
-    const data = await dataService._loadProjects();
+    const data = await dynamicDataService.getProjects();
     return (data as Project[]).find(project => project.id === id);
   },
   
   // Helper method to get full member details for project members
   getProjectWithMembers: async (id: string): Promise<(Project & { memberDetails: Member[] }) | undefined> => {
-    const projects = await dataService._loadProjects();
-    const members = await dataService._loadMembers();
+    const projects = await dynamicDataService.getProjects();
+    const project = (projects as Project[]).find(project => project.id === id);
     
-    const project = (projects as Project[]).find(p => p.id === id);
     if (!project) return undefined;
     
-    const memberDetails = project.members.map(pm => {
-      return (members as Member[]).find(m => m.id === pm.member_id);
-    }).filter(m => m !== undefined) as Member[];
+    const members = await dataService._loadMembers();
+    const memberDetails = project.members
+      .map(projectMember => {
+        return (members as Member[]).find(member => member.id === projectMember.member_id);
+      })
+      .filter(member => member !== undefined) as Member[];
     
     return {
       ...project,
@@ -380,22 +357,21 @@ const dataService = {
 
   // News methods
   getAllNews: async (): Promise<NewsItem[]> => {
-    const data = await dataService._loadNews();
-    return data as NewsItem[];
+    return await dynamicDataService.getNews() as NewsItem[];
   },
 
   getNewsById: async (id: string): Promise<NewsItem | undefined> => {
-    const data = await dataService._loadNews();
+    const data = await dynamicDataService.getNews();
     return (data as NewsItem[]).find(item => item.id === id);
   },
 
   getNewsByCategory: async (category: string): Promise<NewsItem[]> => {
-    const data = await dataService._loadNews();
+    const data = await dynamicDataService.getNews();
     return (data as NewsItem[]).filter(item => item.category === category);
   },
 
   getRecentNews: async (count: number = 3): Promise<NewsItem[]> => {
-    const data = await dataService._loadNews();
+    const data = await dynamicDataService.getNews();
     return [...(data as NewsItem[])]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, count);
@@ -448,28 +424,21 @@ const dataService = {
   
   // Force refresh all data
   refreshAllData: async () => {
-    dataService._dataStore = {
-      members: null,
-      projects: null,
-      events: null,
-      sponsors: null,
-      gallery: null,
-      merchandise: null,
-      news: null,
-      achievements: null,
-      racingJourney: null,
-      teamInfo: null
-    };
+    dataService._dataStore.members = null;
+    dataService._dataStore.events = null;
+    dataService._dataStore.sponsors = null;
+    dataService._dataStore.gallery = null;
+    dataService._dataStore.merchandise = null;
+    dataService._dataStore.achievements = null;
+    dataService._dataStore.racingJourney = null;
+    dataService._dataStore.teamInfo = null;
     
-    // Preload all data
     await Promise.all([
       dataService._loadMembers(),
-      dataService._loadProjects(),
       dataService._loadEvents(),
       dataService._loadSponsors(),
       dataService._loadGallery(),
       dataService._loadMerchandise(),
-      dataService._loadNews(),
       dataService._loadAchievements(),
       dataService._loadRacingJourney(),
       dataService._loadTeamInfo()

@@ -33,8 +33,7 @@
     "eject": "react-scripts eject",
     "rebuild-css": "npx tailwindcss -i ./src/index.css -o ./src/output.css && npm start",
     "copy-data": "node scripts/copy-data-files.js",
-    "dev": "npm run copy-data && react-scripts start",
-    "update-members": "node scripts/update-members-cli.js"
+    "dev": "npm run copy-data && react-scripts start"
   },
   "eslintConfig": {
     "extends": [

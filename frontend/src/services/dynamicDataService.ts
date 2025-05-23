@@ -37,11 +37,20 @@ const dynamicDataService = {
     const timestamp = new Date().getTime();
     return await fetchJSON(`${API_BASE_URL}/data/sponsors.json?t=${timestamp}`);
   },
-  
-  // News data
+    // News data
   getNews: async () => {
-    const timestamp = new Date().getTime();
-    return await fetchJSON(`${API_BASE_URL}/data/news.json?t=${timestamp}`);
+    try {
+      const timestamp = new Date().getTime();
+      const response = await fetch(`${API_BASE_URL}/data/news.json?t=${timestamp}`);
+      if (!response.ok) {
+        console.warn('News data not found, returning empty array');
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching news data:', error);
+      return [];
+    }
   },
   
   // Achievements data
@@ -49,11 +58,20 @@ const dynamicDataService = {
     const timestamp = new Date().getTime();
     return await fetchJSON(`${API_BASE_URL}/data/achievements.json?t=${timestamp}`);
   },
-  
-  // Projects data
+    // Projects data
   getProjects: async () => {
-    const timestamp = new Date().getTime();
-    return await fetchJSON(`${API_BASE_URL}/data/projects.json?t=${timestamp}`);
+    try {
+      const timestamp = new Date().getTime();
+      const response = await fetch(`${API_BASE_URL}/data/projects.json?t=${timestamp}`);
+      if (!response.ok) {
+        console.warn('Projects data not found, returning empty array');
+        return [];
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching projects data:', error);
+      return [];
+    }
   },
   
   // Racing journey data
@@ -79,8 +97,7 @@ const dynamicDataService = {
     const timestamp = new Date().getTime();
     return await fetchJSON(`${API_BASE_URL}/data/merchandise.json?t=${timestamp}`);
   },
-  
-  // Force reload all data
+    // Force reload all data
   refreshData: async () => {
     // Clear localStorage cache if any
     localStorage.removeItem('data_cache');
@@ -90,9 +107,7 @@ const dynamicDataService = {
       dynamicDataService.getMembers(),
       dynamicDataService.getEvents(),
       dynamicDataService.getSponsors(),
-      dynamicDataService.getNews(),
       dynamicDataService.getAchievements(),
-      dynamicDataService.getProjects(),
       dynamicDataService.getRacingJourney(),
       dynamicDataService.getTeamInfo(),
       dynamicDataService.getGallery(),

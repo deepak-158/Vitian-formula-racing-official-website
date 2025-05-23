@@ -1,49 +1,54 @@
-# VIT Racing Team - Content Management System
+# Netlify CMS Setup Guide
 
-Our custom CMS lets you manage all website content without Content Security Policy (CSP) issues.
+Follow these steps to set up Netlify CMS with identity management for your racing team website:
 
-## Using the Web CMS
+## 1. Deploy your site to Netlify
 
-1. **Access the Admin Panel**
-   - Go to your website URL + `/admin`
-   - You'll see the Content Manager interface
+- Push your code to GitHub/GitLab/BitBucket
+- Log in to [Netlify](https://app.netlify.com/)
+- Click "New site from Git" and connect your repository
+- Follow the steps to deploy
 
-2. **Choose Content Type**
-   - Select the type of content you want to edit from the left sidebar:
-     - Team Members
-     - Achievements 
-     - Events
-     - Gallery
-     - Merchandise
-     - News
-     - Projects
-     - Racing Journey
-     - Sponsors
-     - Team Info
+## 2. Enable Netlify Identity
 
-3. **Edit Content**
-   - Click on any item in the list to edit it
-   - Make your changes in the form fields
-   - Click "Update Item" to save your changes to that item
+- Go to your site settings in Netlify
+- Navigate to "Identity" in the left menu
+- Click "Enable Identity"
+- Under "Registration preferences," choose "Invite only" to restrict access
+- Scroll down to "Services" and enable "Git Gateway" to allow CMS to access Git
 
-4. **Add New Content**
-   - Click the "+ New Item" button at the top
-   - Fill in the details for the new item
-   - Click "Update Item" to save
+## 3. Configure External Providers (Optional)
 
-5. **Delete Content**
-   - Select the item you want to delete
-   - Click the "Delete" button (red button)
-   - Confirm the deletion when prompted
+- If you want to allow login via GitHub or another provider:
+  - Scroll down to "External providers" 
+  - Click "Add provider" and select your preferred provider
+  - Follow the steps to set up OAuth
 
-6. **Save All Changes**
-   - After making all your edits, additions, or deletions
-   - Click the "Save All Changes" button at the top
-   - Wait for the confirmation that all changes are saved
+## 4. Invite Users
+
+- Go to the "Identity" tab
+- Click "Invite users"
+- Enter the email addresses of team members who should have access
+- They'll receive an invitation email with a link to set a password
+
+## 5. Access the CMS
+
+- After deployment, go to your site at `/admin/` (e.g., `https://your-site.netlify.app/admin/`)
+- Log in with your invited email and password
+- You should now have access to edit the site content
+
+## Updating Content
+
+1. Log in to the admin panel at `/admin/`
+2. Select the content type you want to edit (e.g., "Team Members")
+3. Make your changes
+4. Click "Save" to save your changes
+5. Click "Publish" to publish them to the site
 
 ## Important Notes
 
-- Changes aren't permanently saved until you click "Save All Changes"
-- If automatic save fails, you'll be prompted to download a backup JSON file
-- Upload the file to your site's repository manually if needed
+- Any changes made through the CMS are committed directly to your repository
+- After publishing changes, Netlify will automatically rebuild and deploy your site
+- The site preview may take a minute to update after publishing
 
+For more help, visit [Netlify CMS Documentation](https://www.netlifycms.org/docs/intro/)
