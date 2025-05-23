@@ -1,202 +1,28 @@
 backend:
   name: git-gateway
-  branch: main
+  branch: main # Branch to update (optional; defaults to master)
 
-media_folder: "public/images"
-public_folder: "/images"
+media_folder: "public/images/team" # Media files will be stored in the repo under public/images/team
+public_folder: "/images/team" # The src attribute for uploaded media will begin with /images/team
 
 collections:
-  - name: "data"
-    label: "Website Data"
-    files:
-      - name: "team-members"
-        label: "Team Members"
-        file: "src/data/members.json"
-        format: "json"
-        description: "Team member details"
+  - name: "team"
+    label: "Team Members"
+    folder: "src/data/team"
+    create: true
+    extension: "json"
+    format: "json"
+    identifier_field: "name"
+    fields:
+      - {label: "ID", name: "id", widget: "string"}
+      - {label: "Name", name: "name", widget: "string"}
+      - {label: "Role", name: "role", widget: "string"}
+      - {label: "Bio", name: "bio", widget: "text"}
+      - {label: "Profile Image", name: "image_url", widget: "image"}
+      - label: "Social Links"
+        name: "social_links"
+        widget: "object"
         fields:
-          - label: "Members"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Name", name: "name", widget: "string"}
-              - {label: "Role", name: "role", widget: "string"}
-              - {label: "Bio", name: "bio", widget: "text"}
-              - {label: "Image URL", name: "image_url", widget: "string"}
-              - label: "Social Links"
-                name: "social_links"
-                widget: "object"
-                fields:
-                  - {label: "LinkedIn", name: "linkedin", widget: "string", required: false}
-                  - {label: "Twitter", name: "twitter", widget: "string", required: false}
-                  - {label: "GitHub", name: "github", widget: "string", required: false}
-
-      - name: "events"
-        label: "Events"
-        file: "src/data/events.json"
-        format: "json"
-        description: "Events information"
-        fields:
-          - label: "Events"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Date", name: "date", widget: "string"}
-              - {label: "Location", name: "location", widget: "string"}
-              - {label: "Category", name: "category", widget: "string"}
-              - {label: "Image URL", name: "imageUrl", widget: "string"}
-              - {label: "Is Upcoming", name: "isUpcoming", widget: "boolean"}
-              - {label: "Registration Link", name: "registrationLink", widget: "string", required: false}
-
-      - name: "sponsors"
-        label: "Sponsors"
-        file: "src/data/sponsors.json"
-        format: "json"
-        description: "Sponsor information"
-        fields:
-          - label: "Sponsors"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Name", name: "name", widget: "string"}
-              - {label: "Logo", name: "logo", widget: "string"}
-              - {label: "Tier", name: "tier", widget: "select", options: ["platinum", "gold", "silver", "bronze", "partner"]}
-              - {label: "Website", name: "website", widget: "string"}
-              - {label: "Description", name: "description", widget: "text", required: false}
-              - {label: "Since", name: "since", widget: "string", required: false}
-
-      - name: "news"
-        label: "News"
-        file: "src/data/news.json"
-        format: "json"
-        description: "News articles"
-        fields:
-          - label: "News Items"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Content", name: "content", widget: "markdown"}
-              - {label: "Summary", name: "summary", widget: "text"}
-              - {label: "Date", name: "date", widget: "string"}
-              - {label: "Author", name: "author", widget: "string"}
-              - {label: "Category", name: "category", widget: "string"}
-              - {label: "Image URL", name: "imageUrl", widget: "string"}
-              - {label: "Tags", name: "tags", widget: "list"}
-
-      - name: "achievements"
-        label: "Achievements"
-        file: "src/data/achievements.json"
-        format: "json"
-        description: "Team achievements"
-        fields:
-          - label: "Achievements"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Date", name: "date", widget: "string"}
-              - {label: "Venue", name: "venue", widget: "string"}
-              - {label: "Category", name: "category", widget: "string"}
-              - {label: "Image URL", name: "imageUrl", widget: "string"}
-              - {label: "Additional Awards", name: "additionalAwards", widget: "list", required: false}
-      - name: "projects"
-        label: "Projects"
-        file: "src/data/projects.json"
-        format: "json"
-        description: "Project information"
-        fields:
-          - label: "Projects"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Status", name: "status", widget: "string"}
-              - {label: "Start Date", name: "start_date", widget: "string"}
-              - {label: "End Date", name: "end_date", widget: "string", required: false}
-              - {label: "Image URL", name: "image_url", widget: "string"}
-              - label: "Members"
-                name: "members"
-                widget: "list"
-                fields:
-                  - {label: "Role", name: "role", widget: "string"}
-                  - {label: "Member ID", name: "member_id", widget: "string"}
-                  
-      - name: "gallery"
-        label: "Gallery"
-        file: "src/data/gallery.json"
-        format: "json"
-        description: "Gallery images"
-        fields:
-          - label: "Gallery Images"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "text", required: false}
-              - {label: "Image URL", name: "imageUrl", widget: "string"}
-              - {label: "Category", name: "category", widget: "string"}
-              - {label: "Date", name: "date", widget: "string"}
-
-      - name: "racing-journey"
-        label: "Racing Journey"
-        file: "src/data/racing-journey.json"
-        format: "json"
-        description: "Team racing journey timeline"
-        fields:
-          - label: "Timeline Events"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Title", name: "title", widget: "string"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Date", name: "date", widget: "string"}
-              - {label: "Image URL", name: "imageUrl", widget: "string", required: false}
-
-      - name: "team-info"
-        label: "Team Information"
-        file: "src/data/team-info.json"
-        format: "json"
-        description: "General team information"
-        fields:
-          - {label: "Team Name", name: "teamName", widget: "string"}
-          - {label: "Founded", name: "founded", widget: "string"}
-          - {label: "Description", name: "description", widget: "text"}
-          - {label: "Mission", name: "mission", widget: "text"}
-          - {label: "Vision", name: "vision", widget: "text"}
-          - label: "Contact"
-            name: "contact"
-            widget: "object"
-            fields:
-              - {label: "Email", name: "email", widget: "string"}
-              - {label: "Phone", name: "phone", widget: "string"}
-              - {label: "Address", name: "address", widget: "text"}
-      
-      - name: "merchandise"
-        label: "Merchandise"
-        file: "src/data/merchandise.json"
-        format: "json"
-        description: "Team merchandise"
-        fields:
-          - label: "Merchandise Items"
-            name: "root"
-            widget: "list"
-            fields:
-              - {label: "ID", name: "id", widget: "string"}
-              - {label: "Name", name: "name", widget: "string"}
-              - {label: "Description", name: "description", widget: "text"}
-              - {label: "Price", name: "price", widget: "string"}
-              - {label: "Image URL", name: "imageUrl", widget: "string"}
-              - {label: "Available", name: "available", widget: "boolean", default: true}
+          - {label: "LinkedIn", name: "linkedin", widget: "string", required: false}
+          - {label: "Twitter", name: "twitter", widget: "string", required: false}
+          - {label: "GitHub", name: "github", widget: "string", required: false}
