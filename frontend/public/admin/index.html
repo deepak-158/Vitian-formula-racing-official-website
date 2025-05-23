@@ -32,20 +32,45 @@
       flex: 1;
       display: flex;
       height: calc(100vh - 60px);
-    }
-    .sidebar {
+    }    .sidebar {
       width: 250px;
       background: #f7fafc;
       border-right: 1px solid #e2e8f0;
       overflow-y: auto;
-      padding: 1rem;
+      display: flex;
+      flex-direction: column;
     }
-    .content-area {
-      flex: 1;
+    .data-nav {
       padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .data-nav h3 {
+      margin-top: 0;
+    }
+    .data-nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .data-type-item {
+      padding: 0.5rem;
+      cursor: pointer;
+      border-radius: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+    .data-type-item:hover {
+      background-color: #edf2f7;
+    }
+    .data-type-item.active {
+      background-color: #4299e1;
+      color: white;
+    }
+    .item-list-container {
+      padding: 1rem;
+      flex: 1;
       overflow-y: auto;
     }
-    .member-card {
+    .item-card {
       border: 1px solid #e2e8f0;
       border-radius: 0.375rem;
       padding: 1rem;
@@ -53,11 +78,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .member-card:hover {
+    .item-card:hover {
       border-color: #4299e1;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
-    .member-card.active {
+    .item-card.active {
       border-color: #4299e1;
       background-color: #ebf8ff;
     }
@@ -107,246 +132,568 @@
     }
   </style>
 </head>
-<body>
-  <div id="editor-container">
+<body>  <div id="editor-container">
     <div class="admin-header">
-      <h1>Team Members Editor</h1>
+      <h1>VIT Racing Team - Content Manager</h1>
       <div>
-        <button id="new-member-btn">+ New Member</button>
+        <button id="new-item-btn">+ New Item</button>
         <button id="save-all-btn">Save All Changes</button>
       </div>
     </div>
     
     <div class="editor-frame">
-      <div class="sidebar" id="members-list">
-        <!-- Member list will be populated here -->
-        <div class="loading">Loading members...</div>
+      <div class="sidebar">
+        <div class="data-nav">
+          <h3>Data Types</h3>
+          <ul id="data-type-list">
+            <li class="data-type-item active" data-type="members">Team Members</li>
+            <li class="data-type-item" data-type="achievements">Achievements</li>
+            <li class="data-type-item" data-type="events">Events</li>
+            <li class="data-type-item" data-type="gallery">Gallery</li>
+            <li class="data-type-item" data-type="merchandise">Merchandise</li>
+            <li class="data-type-item" data-type="news">News</li>
+            <li class="data-type-item" data-type="projects">Projects</li>
+            <li class="data-type-item" data-type="racing-journey">Racing Journey</li>
+            <li class="data-type-item" data-type="sponsors">Sponsors</li>
+            <li class="data-type-item" data-type="team-info">Team Info</li>
+          </ul>
+        </div>
+        <div class="item-list-container">
+          <h3 id="current-data-type">Team Members</h3>
+          <div id="items-list">
+            <!-- Item list will be populated here -->
+            <div class="loading">Loading items...</div>
+          </div>
+        </div>
       </div>
       
       <div class="content-area" id="editor-content">
-        <h2>Select a member to edit</h2>
-        <p>Click on a team member from the sidebar to edit their details, or click "New Member" to add someone new.</p>
+        <h2>Select an item to edit</h2>
+        <p>Click on an item from the sidebar to edit its details, or click "New Item" to add a new one.</p>
       </div>
     </div>
   </div>
   
   <div id="notification">Changes saved successfully!</div>
-
   <script type="module">
     // Main CMS functionality
     document.addEventListener('DOMContentLoaded', async () => {
-      // Load the team members data
-      let members = [];
-      let currentMember = null;
+      // State
+      let currentDataType = 'members';
+      let currentData = {};
+      let currentItemIndex = null;
       
-      try {
-        const response = await fetch('/data/members.json');
-        if (!response.ok) throw new Error('Failed to load members data');
-        members = await response.json();
-        renderMembersList();
-      } catch (error) {
-        console.error('Error loading members:', error);
-        document.getElementById('members-list').innerHTML = 
-          '<div class="error">Error loading members. Please refresh the page.</div>';
-      }
+      // Schema definitions for different data types
+      const schemas = {
+        members: {
+          title: 'Team Member',
+          newItem: {
+            id: '',
+            name: 'New Team Member',
+            role: 'Role Title',
+            bio: 'Bio information goes here',
+            image_url: '/images/team/placeholder.jpg',
+            social_links: {
+              linkedin: '',
+              twitter: '',
+              github: ''
+            }
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'name', label: 'Name', type: 'text', required: true },
+            { name: 'role', label: 'Role', type: 'text', required: true },
+            { name: 'bio', label: 'Bio', type: 'textarea', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true },
+            { name: 'social_links.linkedin', label: 'LinkedIn URL', type: 'text' },
+            { name: 'social_links.twitter', label: 'Twitter URL', type: 'text' },
+            { name: 'social_links.github', label: 'GitHub URL', type: 'text' }
+          ],
+          itemDisplay: (item) => `<h3>${item.name || 'Unnamed'}</h3><p>${item.role || 'No role'}</p>`
+        },
+        achievements: {
+          title: 'Achievement',
+          newItem: {
+            id: '',
+            title: 'New Achievement',
+            description: 'Achievement description',
+            date: new Date().toISOString().split('T')[0],
+            image_url: '/images/achievements/placeholder.jpg'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'date', label: 'Date', type: 'date', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${formatDate(item.date) || 'No date'}</p>`
+        },
+        events: {
+          title: 'Event',
+          newItem: {
+            id: '',
+            title: 'New Event',
+            description: 'Event description',
+            date: new Date().toISOString().split('T')[0],
+            location: 'Event Location',
+            image_url: '/images/events/placeholder.jpg'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'date', label: 'Date', type: 'date', required: true },
+            { name: 'location', label: 'Location', type: 'text', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${item.location || 'No location'} - ${formatDate(item.date) || 'No date'}</p>`
+        },
+        gallery: {
+          title: 'Gallery Item',
+          newItem: {
+            id: '',
+            title: 'New Gallery Item',
+            description: 'Image description',
+            image_url: '/images/gallery/placeholder.jpg',
+            category: 'general'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true },
+            { name: 'category', label: 'Category', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${item.category || 'No category'}</p>`
+        },
+        merchandise: {
+          title: 'Merchandise Item',
+          newItem: {
+            id: '',
+            name: 'New Merchandise',
+            description: 'Product description',
+            price: '0.00',
+            image_url: '/images/merchandise/placeholder.jpg',
+            available: true
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'name', label: 'Name', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'price', label: 'Price', type: 'text', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true },
+            { name: 'available', label: 'Available', type: 'checkbox' }
+          ],
+          itemDisplay: (item) => `<h3>${item.name || 'Unnamed'}</h3><p>₹${item.price || '0.00'}</p>`
+        },
+        news: {
+          title: 'News Item',
+          newItem: {
+            id: '',
+            title: 'New News Item',
+            content: 'News content',
+            date: new Date().toISOString().split('T')[0],
+            image_url: '/images/news/placeholder.jpg',
+            author: 'Team VIT Racing'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'content', label: 'Content', type: 'textarea', required: true },
+            { name: 'date', label: 'Date', type: 'date', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true },
+            { name: 'author', label: 'Author', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${formatDate(item.date) || 'No date'} - ${item.author || 'No author'}</p>`
+        },
+        projects: {
+          title: 'Project',
+          newItem: {
+            id: '',
+            title: 'New Project',
+            description: 'Project description',
+            status: 'In Progress',
+            image_url: '/images/projects/placeholder.jpg',
+            year: new Date().getFullYear().toString()
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'status', label: 'Status', type: 'text', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true },
+            { name: 'year', label: 'Year', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${item.year || 'No year'} - ${item.status || 'No status'}</p>`
+        },
+        'racing-journey': {
+          title: 'Racing Journey Item',
+          newItem: {
+            id: '',
+            title: 'New Journey Milestone',
+            description: 'Milestone description',
+            year: new Date().getFullYear().toString(),
+            image_url: '/images/journey/placeholder.jpg'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'title', label: 'Title', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'year', label: 'Year', type: 'text', required: true },
+            { name: 'image_url', label: 'Image URL', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.title || 'Unnamed'}</h3><p>${item.year || 'No year'}</p>`
+        },
+        sponsors: {
+          title: 'Sponsor',
+          newItem: {
+            id: '',
+            name: 'New Sponsor',
+            description: 'Sponsor description',
+            logo_url: '/images/sponsors/placeholder.jpg',
+            website: 'https://example.com',
+            tier: 'Gold'
+          },
+          fields: [
+            { name: 'id', label: 'ID', type: 'text', required: true },
+            { name: 'name', label: 'Name', type: 'text', required: true },
+            { name: 'description', label: 'Description', type: 'textarea', required: true },
+            { name: 'logo_url', label: 'Logo URL', type: 'text', required: true },
+            { name: 'website', label: 'Website', type: 'text', required: true },
+            { name: 'tier', label: 'Tier', type: 'text', required: true }
+          ],
+          itemDisplay: (item) => `<h3>${item.name || 'Unnamed'}</h3><p>${item.tier || 'No tier'}</p>`
+        },
+        'team-info': {
+          title: 'Team Info',
+          fields: [
+            { name: 'teamName', label: 'Team Name', type: 'text', required: true },
+            { name: 'foundedYear', label: 'Founded Year', type: 'text', required: true },
+            { name: 'mission', label: 'Mission Statement', type: 'textarea', required: true },
+            { name: 'vision', label: 'Vision', type: 'textarea', required: true },
+            { name: 'email', label: 'Contact Email', type: 'text', required: true },
+            { name: 'phone', label: 'Contact Phone', type: 'text', required: true },
+            { name: 'address', label: 'Address', type: 'textarea', required: true },
+            { name: 'social.facebook', label: 'Facebook URL', type: 'text' },
+            { name: 'social.instagram', label: 'Instagram URL', type: 'text' },
+            { name: 'social.twitter', label: 'Twitter URL', type: 'text' },
+            { name: 'social.linkedin', label: 'LinkedIn URL', type: 'text' },
+            { name: 'social.youtube', label: 'YouTube URL', type: 'text' }
+          ],
+          itemDisplay: () => `<h3>Team Information</h3>`,
+          isSingleItem: true // Special case: not an array
+        }
+      };
       
-      // Event listeners
-      document.getElementById('new-member-btn').addEventListener('click', createNewMember);
-      document.getElementById('save-all-btn').addEventListener('click', saveAllChanges);
-      
-      // Functions
-      function renderMembersList() {
-        const listContainer = document.getElementById('members-list');
-        listContainer.innerHTML = '';
-        
-        members.forEach((member, index) => {
-          const memberCard = document.createElement('div');
-          memberCard.className = 'member-card';
-          memberCard.dataset.index = index;
-          memberCard.innerHTML = `
-            <h3>${member.name}</h3>
-            <p>${member.role}</p>
-          `;
-          
-          memberCard.addEventListener('click', () => {
-            document.querySelectorAll('.member-card').forEach(card => {
-              card.classList.remove('active');
-            });
-            memberCard.classList.add('active');
-            editMember(index);
+      // Helper functions
+      function formatDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+          const date = new Date(dateStr);
+          return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
           });
-          
-          listContainer.appendChild(memberCard);
-        });
-        
-        if (members.length === 0) {
-          listContainer.innerHTML = '<p>No members found. Create a new one!</p>';
+        } catch (e) {
+          return dateStr;
         }
       }
       
-      function editMember(index) {
-        currentMember = index;
-        const member = members[index];
+      function getNestedValue(obj, path) {
+        return path.split('.').reduce((prev, curr) => 
+          prev && prev[curr] !== undefined ? prev[curr] : '', obj);
+      }
+      
+      function setNestedValue(obj, path, value) {
+        const parts = path.split('.');
+        const lastKey = parts.pop();
+        const target = parts.reduce((prev, curr) => {
+          if (!prev[curr]) prev[curr] = {};
+          return prev[curr];
+        }, obj);
+        target[lastKey] = value;
+        return obj;
+      }
+      
+      // Event listeners for navigation
+      document.querySelectorAll('.data-type-item').forEach(item => {
+        item.addEventListener('click', () => switchDataType(item.dataset.type));
+      });
+      
+      document.getElementById('new-item-btn').addEventListener('click', createNewItem);
+      document.getElementById('save-all-btn').addEventListener('click', saveAllChanges);
+      
+      // Initial load
+      await switchDataType('members');
+      
+      // Main functions
+      async function switchDataType(dataType) {
+        // Update UI
+        document.querySelectorAll('.data-type-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.type === dataType);
+        });
+        
+        currentDataType = dataType;
+        document.getElementById('current-data-type').textContent = 
+          schemas[dataType].title + (schemas[dataType].isSingleItem ? '' : 's');
+        
+        // Reset state
+        currentItemIndex = null;
+        document.getElementById('editor-content').innerHTML = `
+          <h2>Select an item to edit</h2>
+          <p>Click on an item from the sidebar to edit its details, or click "New Item" to add a new one.</p>
+        `;
+        
+        // Load data
+        try {
+          const response = await fetch(`/data/${dataType}.json`);
+          if (!response.ok) throw new Error(`Failed to load ${dataType} data`);
+          currentData[dataType] = await response.json();
+          renderItemsList();
+        } catch (error) {
+          console.error(`Error loading ${dataType}:`, error);
+          document.getElementById('items-list').innerHTML = 
+            `<div class="error">Error loading ${dataType} data. Please refresh the page.</div>`;
+        }
+      }
+      
+      function renderItemsList() {
+        const listContainer = document.getElementById('items-list');
+        listContainer.innerHTML = '';
+        
+        const schema = schemas[currentDataType];
+        const data = currentData[currentDataType];
+        
+        if (schema.isSingleItem) {
+          // Single item case (like team-info)
+          const itemCard = document.createElement('div');
+          itemCard.className = 'item-card';
+          itemCard.innerHTML = schema.itemDisplay(data);
+          
+          itemCard.addEventListener('click', () => {
+            document.querySelectorAll('.item-card').forEach(card => {
+              card.classList.remove('active');
+            });
+            itemCard.classList.add('active');
+            editItem(-1, data); // Use -1 to indicate single object
+          });
+          
+          listContainer.appendChild(itemCard);
+        } else {
+          // Array of items case
+          if (!Array.isArray(data)) {
+            listContainer.innerHTML = '<p>No items found or invalid data format.</p>';
+            return;
+          }
+          
+          data.forEach((item, index) => {
+            const itemCard = document.createElement('div');
+            itemCard.className = 'item-card';
+            itemCard.dataset.index = index;
+            itemCard.innerHTML = schema.itemDisplay(item);
+            
+            itemCard.addEventListener('click', () => {
+              document.querySelectorAll('.item-card').forEach(card => {
+                card.classList.remove('active');
+              });
+              itemCard.classList.add('active');
+              editItem(index, item);
+            });
+            
+            listContainer.appendChild(itemCard);
+          });
+          
+          if (data.length === 0) {
+            listContainer.innerHTML = `<p>No ${schema.title.toLowerCase()}s found. Create a new one!</p>`;
+          }
+        }
+      }
+      
+      function editItem(index, item) {
+        currentItemIndex = index;
+        const schema = schemas[currentDataType];
         
         const editorContent = document.getElementById('editor-content');
         editorContent.innerHTML = `
-          <h2>Edit Team Member</h2>
-          <form id="member-form">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" value="${member.name || ''}" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="role">Role</label>
-              <input type="text" id="role" value="${member.role || ''}" required>
-            </div>
-            
-            <div class="form-group">
-              <label for="bio">Bio</label>
-              <textarea id="bio" rows="4" required>${member.bio || ''}</textarea>
-            </div>
-            
-            <div class="form-group">
-              <label for="image_url">Image URL</label>
-              <input type="text" id="image_url" value="${member.image_url || ''}" required>
-            </div>
-            
-            <h3>Social Links</h3>
-            
-            <div class="form-group">
-              <label for="linkedin">LinkedIn URL</label>
-              <input type="text" id="linkedin" value="${member.social_links?.linkedin || ''}">
-            </div>
-            
-            <div class="form-group">
-              <label for="twitter">Twitter URL</label>
-              <input type="text" id="twitter" value="${member.social_links?.twitter || ''}">
-            </div>
-            
-            <div class="form-group">
-              <label for="github">GitHub URL</label>
-              <input type="text" id="github" value="${member.social_links?.github || ''}">
-            </div>
+          <h2>Edit ${schema.title}</h2>
+          <form id="item-form">
+            ${schema.fields.map(field => {
+              let inputHtml = '';
+              const value = getNestedValue(item, field.name);
+              
+              if (field.type === 'textarea') {
+                inputHtml = `<textarea id="${field.name}" rows="4" ${field.required ? 'required' : ''}>${value || ''}</textarea>`;
+              } else if (field.type === 'checkbox') {
+                inputHtml = `<input type="checkbox" id="${field.name}" ${value ? 'checked' : ''}>`;
+              } else {
+                inputHtml = `<input type="${field.type}" id="${field.name}" value="${value || ''}" ${field.required ? 'required' : ''}>`;
+              }
+              
+              return `
+                <div class="form-group">
+                  <label for="${field.name}">${field.label}</label>
+                  ${inputHtml}
+                </div>
+              `;
+            }).join('')}
             
             <div>
-              <button type="button" id="update-member-btn">Update Member</button>
-              <button type="button" id="delete-member-btn" class="button-danger">Delete Member</button>
+              <button type="button" id="update-item-btn">Update ${schema.title}</button>
+              ${schema.isSingleItem ? '' : `<button type="button" id="delete-item-btn" class="button-danger">Delete ${schema.title}</button>`}
             </div>
           </form>
         `;
         
-        document.getElementById('update-member-btn').addEventListener('click', () => updateMember(index));
-        document.getElementById('delete-member-btn').addEventListener('click', () => deleteMember(index));
-      }
-      
-      function updateMember(index) {
-        const member = members[index];
+        document.getElementById('update-item-btn').addEventListener('click', () => updateItem(index));
         
-        member.name = document.getElementById('name').value;
-        member.role = document.getElementById('role').value;
-        member.bio = document.getElementById('bio').value;
-        member.image_url = document.getElementById('image_url').value;
-        
-        member.social_links = member.social_links || {};
-        member.social_links.linkedin = document.getElementById('linkedin').value;
-        member.social_links.twitter = document.getElementById('twitter').value;
-        member.social_links.github = document.getElementById('github').value;
-        
-        // Update the list display
-        renderMembersList();
-        
-        // Show notification
-        showNotification('Member updated! Don\'t forget to save all changes.');
-      }
-      
-      function deleteMember(index) {
-        if (confirm('Are you sure you want to delete this member?')) {
-          members.splice(index, 1);
-          renderMembersList();
-          
-          document.getElementById('editor-content').innerHTML = `
-            <h2>Select a member to edit</h2>
-            <p>Member deleted. Click on another team member to edit, or click "New Member" to add someone new.</p>
-          `;
-          
-          showNotification('Member deleted! Don\'t forget to save all changes.');
+        if (!schema.isSingleItem) {
+          document.getElementById('delete-item-btn').addEventListener('click', () => deleteItem(index));
         }
       }
       
-      function createNewMember() {
-        const newId = members.length > 0 
-          ? String(Math.max(...members.map(m => parseInt(m.id, 10))) + 1) 
+      function updateItem(index) {
+        const schema = schemas[currentDataType];
+        let data = currentData[currentDataType];
+        let item;
+        
+        if (schema.isSingleItem) {
+          // Single item case
+          item = data;
+        } else {
+          // Array of items case
+          item = data[index];
+        }
+        
+        // Update all fields
+        schema.fields.forEach(field => {
+          const element = document.getElementById(field.name);
+          let value;
+          
+          if (field.type === 'checkbox') {
+            value = element.checked;
+          } else {
+            value = element.value;
+          }
+          
+          setNestedValue(item, field.name, value);
+        });
+        
+        // If it's an array, update the specific item
+        if (!schema.isSingleItem) {
+          data[index] = item;
+        }
+        
+        // Update the list display
+        renderItemsList();
+        
+        // Show notification
+        showNotification(`${schema.title} updated! Don't forget to save all changes.`);
+      }
+      
+      function deleteItem(index) {
+        const schema = schemas[currentDataType];
+        
+        if (confirm(`Are you sure you want to delete this ${schema.title.toLowerCase()}?`)) {
+          currentData[currentDataType].splice(index, 1);
+          renderItemsList();
+          
+          document.getElementById('editor-content').innerHTML = `
+            <h2>Select an item to edit</h2>
+            <p>${schema.title} deleted. Click on another item to edit, or click "New Item" to add a new one.</p>
+          `;
+          
+          showNotification(`${schema.title} deleted! Don't forget to save all changes.`);
+        }
+      }
+      
+      function createNewItem() {
+        const schema = schemas[currentDataType];
+        
+        if (schema.isSingleItem) {
+          // Can't create new items for single-item types
+          showNotification(`Can't create new items for ${schema.title}. It's a single entity.`, 'error');
+          return;
+        }
+        
+        // Generate a new ID
+        const items = currentData[currentDataType];
+        const newId = items.length > 0 
+          ? String(Math.max(...items.map(item => parseInt(item.id || '0', 10))) + 1) 
           : "1";
           
-        const newMember = {
-          id: newId,
-          name: "New Team Member",
-          role: "Role Title",
-          bio: "Bio information goes here",
-          image_url: "/images/team/placeholder.jpg",
-          social_links: {
-            linkedin: "",
-            twitter: "",
-            github: ""
-          }
-        };
+        // Create a new item and set the ID
+        const newItem = { ...schema.newItem, id: newId };
         
-        members.push(newMember);
-        renderMembersList();
+        // Add to the current data
+        items.push(newItem);
         
-        // Select the new member
-        editMember(members.length - 1);
+        // Update display
+        renderItemsList();
         
-        // Highlight the new member in the list
-        const cards = document.querySelectorAll('.member-card');
+        // Select the new item
+        editItem(items.length - 1, newItem);
+        
+        // Highlight the new item in the list
+        const cards = document.querySelectorAll('.item-card');
         cards.forEach(card => card.classList.remove('active'));
         cards[cards.length - 1].classList.add('active');
         
-        showNotification('New member created! Don\'t forget to save all changes.');
+        showNotification(`New ${schema.title.toLowerCase()} created! Don't forget to save all changes.`);
       }
       
       async function saveAllChanges() {
         try {
-          // In a real environment, this would be an API call
-          // For now, we'll use the netlify function we created
+          const dataType = currentDataType;
+          const data = currentData[dataType];
           
           // Create a form to POST the data
           const form = new FormData();
-          form.append('data', JSON.stringify(members));
+          form.append('dataType', dataType);
+          form.append('data', JSON.stringify(data));
           
-          const response = await fetch('/.netlify/functions/update-members', {
+          const response = await fetch('/.netlify/functions/update-data', {
             method: 'POST',
             body: form
           });
           
-          if (!response.ok) throw new Error('Failed to save members data');
+          if (!response.ok) throw new Error(`Failed to save ${dataType} data`);
           
-          showNotification('All changes saved successfully!');
+          showNotification(`All ${dataType} data saved successfully!`);
           
           // Reload the data to ensure we have the latest
           setTimeout(() => {
             window.location.reload();
           }, 1500);
         } catch (error) {
-          console.error('Error saving members:', error);
+          console.error('Error saving data:', error);
           alert('Error saving changes. Please try again or download the JSON file.');
           
           // Fallback: Let user download the JSON
-          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(members, null, 2));
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(
+            JSON.stringify(currentData[currentDataType], null, 2)
+          );
           const downloadAnchorNode = document.createElement('a');
           downloadAnchorNode.setAttribute("href", dataStr);
-          downloadAnchorNode.setAttribute("download", "members.json");
+          downloadAnchorNode.setAttribute("download", `${currentDataType}.json`);
           document.body.appendChild(downloadAnchorNode);
           downloadAnchorNode.click();
           downloadAnchorNode.remove();
         }
       }
       
-      function showNotification(message) {
+      function showNotification(message, type = 'success') {
         const notification = document.getElementById('notification');
         notification.textContent = message;
         notification.style.display = 'block';
+        
+        // Change color based on type
+        if (type === 'error') {
+          notification.style.backgroundColor = '#f56565';
+        } else {
+          notification.style.backgroundColor = '#48bb78';
+        }
         
         setTimeout(() => {
           notification.style.display = 'none';

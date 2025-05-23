@@ -1,67 +1,71 @@
-# Team Members Admin Management
+# VIT Racing Team - Content Management System
 
-We've implemented a custom CMS solution for managing team members data that works without Content Security Policy (CSP) issues.
+Our custom CMS lets you manage all website content without Content Security Policy (CSP) issues.
 
-## Option 1: Use the Custom Web CMS
+## Using the Web CMS
 
-We've created a browser-based CMS just for your team members:
+1. **Access the Admin Panel**
+   - Go to your website URL + `/admin`
+   - You'll see the Content Manager interface
 
-1. Go to your website URL + `/admin`
-2. You'll see the Team Members Editor interface
-3. Edit members directly in your browser:
-   - Click any member in the sidebar to edit them
-   - Use the "+ New Member" button to add new members
-   - Use "Delete Member" to remove team members
-   - Click "Save All Changes" when you're done
+2. **Choose Content Type**
+   - Select the type of content you want to edit from the left sidebar:
+     - Team Members
+     - Achievements 
+     - Events
+     - Gallery
+     - Merchandise
+     - News
+     - Projects
+     - Racing Journey
+     - Sponsors
+     - Team Info
 
-## Option 2: Use the CLI Tool
+3. **Edit Content**
+   - Click on any item in the list to edit it
+   - Make your changes in the form fields
+   - Click "Update Item" to save your changes to that item
 
-For command-line users, we've created a terminal tool:
+4. **Add New Content**
+   - Click the "+ New Item" button at the top
+   - Fill in the details for the new item
+   - Click "Update Item" to save
 
-1. Open a terminal in the project root directory
-2. Run the following command:
-   ```
-   npm run update-members
-   ```
-3. Follow the on-screen prompts to:
-   - View all members
-   - Add a new member
-   - Edit an existing member
-   - Delete a member
+5. **Delete Content**
+   - Select the item you want to delete
+   - Click the "Delete" button (red button)
+   - Confirm the deletion when prompted
 
-## Option 3: Edit the JSON File Directly
+6. **Save All Changes**
+   - After making all your edits, additions, or deletions
+   - Click the "Save All Changes" button at the top
+   - Wait for the confirmation that all changes are saved
 
-You can also edit the members.json file directly:
+## Important Notes
 
-1. Navigate to: `src/data/members.json`
+- Changes aren't permanently saved until you click "Save All Changes"
+- If automatic save fails, you'll be prompted to download a backup JSON file
+- Upload the file to your site's repository manually if needed
+
+## Alternative Methods
+
+### Command Line Tool
+For team members only, you can use the CLI tool:
+
+```
+npm run update-members
+```
+
+### Direct Editing
+You can also edit any JSON file directly:
+
+1. Navigate to: `src/data/[filename].json`
 2. Make your changes following the existing format
 3. Save the file
 4. Run `npm run copy-data` to copy the updated data to the build directory
 
-## File Structure
-
-The members.json file has the following structure:
-
-```json
-[
-  {
-    "id": "1",
-    "name": "Team Member Name",
-    "role": "Team Role",
-    "bio": "Short biography of the team member",
-    "image_url": "/path/to/image.jpg",
-    "social_links": {
-      "linkedin": "https://linkedin.com/in/username",
-      "twitter": "https://twitter.com/username",
-      "github": "https://github.com/username"
-    }
-  },
-  // Additional members...
-]
-```
-
 ## Help and Support
 
-If you need assistance with managing team members data, please contact the site administrator.
+If you need assistance with managing website content, please contact the site administrator.
 
 If you need assistance with managing team members data, please contact the site administrator.
