@@ -1,0 +1,2 @@
+/admin/*
+  Content-Security-Policy: default-src 'self' https: blob:; connect-src 'self' https: wss:; img-src 'self' https: data: blob:; script-src 'unsafe-eval' 'unsafe-inline' 'self' https://identity.netlify.com https://unpkg.com; style-src 'unsafe-inline' 'self' https:;
