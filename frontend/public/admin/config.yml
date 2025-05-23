@@ -15,13 +15,12 @@ collections:
     delete: false
     editor:
       preview: false
-    files:
-      - label: "Team Members"
+    files:      - label: "Team Members"
         name: "members"
         file: "src/data/members.json"
         fields:
-          - label: "Team Members"
-            name: "members-list"
+          - label: "Team Members List"
+            name: "data"
             widget: "list"
             fields:
               - {label: "ID", name: "id", widget: "string"}
@@ -45,13 +44,12 @@ collections:
     delete: false
     editor:
       preview: false
-    files:
-      - label: "Events"
+    files:      - label: "Events"
         name: "events"
         file: "src/data/events.json"
         fields:
           - label: "Events List"
-            name: "events-list"
+            name: "data"
             widget: "list"
             fields:
               - {label: "ID", name: "id", widget: "string"}
@@ -72,13 +70,12 @@ collections:
     delete: false
     editor:
       preview: false
-    files:
-      - label: "Sponsors"
+    files:      - label: "Sponsors"
         name: "sponsors"
         file: "src/data/sponsors.json"
         fields:
           - label: "Sponsors List"
-            name: "sponsors-list"
+            name: "data"
             widget: "list"
             fields:
               - {label: "ID", name: "id", widget: "string"}
@@ -97,13 +94,12 @@ collections:
     delete: false
     editor:
       preview: false
-    files:
-      - label: "News"
+    files:      - label: "News"
         name: "news"
         file: "src/data/news.json"
         fields:
           - label: "News Items"
-            name: "news-list"
+            name: "data"
             widget: "list"
             fields:
               - {label: "ID", name: "id", widget: "string"}
@@ -124,13 +120,12 @@ collections:
     delete: false
     editor:
       preview: false
-    files:
-      - label: "Achievements"
+    files:      - label: "Achievements"
         name: "achievements"
         file: "src/data/achievements.json"
         fields:
           - label: "Achievements List"
-            name: "achievements-list"
+            name: "data"
             widget: "list"
             fields:
               - {label: "ID", name: "id", widget: "string"}
