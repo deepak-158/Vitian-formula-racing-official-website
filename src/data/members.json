@@ -1,11 +1,3 @@
 {
-  "root": [
-    {
-      "id": "1",
-      "name": "test",
-      "role": "s",
-      "bio": "a",
-      "image_url": "a"
-    }
-  ]
+  "root": []
 }
