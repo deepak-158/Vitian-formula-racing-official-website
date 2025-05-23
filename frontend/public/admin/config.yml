@@ -3,7 +3,7 @@ backend:
   branch: main # Branch to update
   repo: # Your GitHub repository (optional)
 
-# Uncomment for using local backend in development mode
+#Uncomment for using local backend in development mode
 # local_backend: true
 
 # Editorial workflow (optional - enables the draft → review → publish workflow)
@@ -25,23 +25,27 @@ collections:
     summary: "{{fields.name}} - {{fields.role}}"
     file: "members.json"
     fields:
-      - { label: "Members", name: "data", widget: "list", 
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Name", name: "name", widget: "string" },
-            { label: "Role", name: "role", widget: "string" },
-            { label: "Bio", name: "bio", widget: "text" },
-            { label: "Image", name: "image_url", widget: "image", 
-              media_library: { config: { multiple: false } } },
-            { label: "Social Links", name: "social_links", widget: "object", 
-              fields: [
-                { label: "LinkedIn", name: "linkedin", widget: "string", required: false },
-                { label: "Twitter", name: "twitter", widget: "string", required: false },
-                { label: "GitHub", name: "github", widget: "string", required: false }
-              ]
-            }
-          ]
-      }
+      - label: "Members"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Role", name: "role", widget: "string" }
+          - { label: "Bio", name: "bio", widget: "text" }
+          - label: "Image"
+            name: "image_url"
+            widget: "image"
+            media_library:
+              config:
+                multiple: false
+          - label: "Social Links"
+            name: "social_links"
+            widget: "object"
+            fields:
+              - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
+              - { label: "Twitter", name: "twitter", widget: "string", required: false }
+              - { label: "GitHub", name: "github", widget: "string", required: false }
       
   - name: "achievements"
     label: "Achievements"
@@ -51,19 +55,20 @@ collections:
     format: "json"
     file: "achievements.json"
     fields:
-      - { label: "Achievements", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Description", name: "description", widget: "text" },
-            { label: "Date", name: "date", widget: "date" },
-            { label: "Venue", name: "venue", widget: "string" },
-            { label: "Category", name: "category", widget: "string" },
-            { label: "Image", name: "imageUrl", widget: "image" },
-            { label: "Additional Awards", name: "additionalAwards", widget: "list", required: false }
-          ]
-      }
-        - name: "events"
+      - label: "Achievements"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Date", name: "date", widget: "date" }
+          - { label: "Venue", name: "venue", widget: "string" }
+          - { label: "Category", name: "category", widget: "string" }
+          - { label: "Image", name: "imageUrl", widget: "image" }
+          - { label: "Additional Awards", name: "additionalAwards", widget: "list", required: false }
+
+  - name: "events"
     label: "Events"
     folder: "src/data"
     create: true
@@ -71,20 +76,20 @@ collections:
     format: "json"
     file: "events.json"
     fields:
-      - { label: "Events", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Description", name: "description", widget: "text" },
-            { label: "Date", name: "date", widget: "date" },
-            { label: "Location", name: "location", widget: "string" },
-            { label: "Category", name: "category", widget: "string" },
-            { label: "Image", name: "imageUrl", widget: "image" },
-            { label: "Is Upcoming", name: "isUpcoming", widget: "boolean", default: true },
-            { label: "Registration Link", name: "registrationLink", widget: "string", required: false },
-            { label: "Registration Deadline", name: "registrationDeadline", widget: "date", required: false }
-          ]
-      }
+      - label: "Events"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Date", name: "date", widget: "date" }
+          - { label: "Location", name: "location", widget: "string" }
+          - { label: "Category", name: "category", widget: "string" }
+          - { label: "Image", name: "imageUrl", widget: "image" }
+          - { label: "Is Upcoming", name: "isUpcoming", widget: "boolean", default: true }
+          - { label: "Registration Link", name: "registrationLink", widget: "string", required: false }
+          - { label: "Registration Deadline", name: "registrationDeadline", widget: "date", required: false }
       
   - name: "gallery"
     label: "Gallery"
@@ -94,19 +99,19 @@ collections:
     format: "json"
     file: "gallery.json"
     fields:
-      - { label: "Gallery Items", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Category", name: "category", widget: "string" },
-            { label: "Type", name: "type", widget: "select", options: ["image", "video"] },
-            { label: "URL", name: "url", widget: "image" },
-            { label: "Alt Text", name: "alt", widget: "string", required: false },
-            { label: "Thumbnail", name: "thumbnail", widget: "image", required: false },
-            { label: "Description", name: "description", widget: "text", required: false },
-            { label: "Date", name: "date", widget: "date" }
-          ]
-      }
+      - label: "Gallery Items"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Category", name: "category", widget: "string" }
+          - { label: "Type", name: "type", widget: "select", options: ["image", "video"] }
+          - { label: "URL", name: "url", widget: "image" }
+          - { label: "Alt Text", name: "alt", widget: "string", required: false }
+          - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
+          - { label: "Description", name: "description", widget: "text", required: false }
+          - { label: "Date", name: "date", widget: "date" }
       
   - name: "merchandise"
     label: "Merchandise"
@@ -116,19 +121,19 @@ collections:
     format: "json"
     file: "merchandise.json"
     fields:
-      - { label: "Merchandise Items", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Name", name: "name", widget: "string" },
-            { label: "Description", name: "description", widget: "text" },
-            { label: "Price", name: "price", widget: "number" },
-            { label: "Category", name: "category", widget: "string" },
-            { label: "Image URL", name: "imageUrl", widget: "image" },
-            { label: "Available Sizes", name: "availableSizes", widget: "list", required: false },
-            { label: "Stock Quantity", name: "stockQuantity", widget: "number" },
-            { label: "Featured", name: "featured", widget: "boolean", default: false }
-          ]
-      }
+      - label: "Merchandise Items"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Price", name: "price", widget: "number" }
+          - { label: "Category", name: "category", widget: "string" }
+          - { label: "Image URL", name: "imageUrl", widget: "image" }
+          - { label: "Available Sizes", name: "availableSizes", widget: "list", required: false }
+          - { label: "Stock Quantity", name: "stockQuantity", widget: "number" }
+          - { label: "Featured", name: "featured", widget: "boolean", default: false }
       
   - name: "racing-journey"
     label: "Racing Journey"
@@ -138,15 +143,15 @@ collections:
     format: "json"
     file: "racing-journey.json"
     fields:
-      - { label: "Journey Milestones", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "number" },
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Description", name: "description", widget: "text" },
-            { label: "Image", name: "image", widget: "image" },
-            { label: "Link", name: "link", widget: "string", required: false }
-          ]
-      }
+      - label: "Journey Milestones"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "number" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Link", name: "link", widget: "string", required: false }
       
   - name: "sponsors"
     label: "Sponsors"
@@ -156,18 +161,20 @@ collections:
     format: "json"
     file: "sponsors.json"
     fields:
-      - { label: "Sponsors", name: "data", widget: "list",
-          fields: [
-            { label: "ID", name: "id", widget: "string" },
-            { label: "Name", name: "name", widget: "string" },
-            { label: "Logo", name: "logo", widget: "image" },
-            { label: "Tier", name: "tier", widget: "select", 
-              options: ["platinum", "gold", "silver", "bronze", "partner"] },
-            { label: "Website", name: "website", widget: "string" },
-            { label: "Description", name: "description", widget: "text", required: false },
-            { label: "Since", name: "since", widget: "string", required: false }
-          ]
-      }
+      - label: "Sponsors"
+        name: "data"
+        widget: "list"
+        fields:
+          - { label: "ID", name: "id", widget: "string" }
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Logo", name: "logo", widget: "image" }
+          - label: "Tier"
+            name: "tier"
+            widget: "select"
+            options: ["platinum", "gold", "silver", "bronze", "partner"]
+          - { label: "Website", name: "website", widget: "string" }
+          - { label: "Description", name: "description", widget: "text", required: false }
+          - { label: "Since", name: "since", widget: "string", required: false }
       
   - name: "team-info"
     label: "Team Info"
@@ -177,24 +184,30 @@ collections:
     format: "json"
     file: "team-info.json"
     fields:
-      - { label: "Welcome Section", name: "welcome", widget: "object",
-          fields: [
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Description", name: "description", widget: "list", field: { widget: "text" } },
-            { label: "Logo Image", name: "logoImage", widget: "image" },
-            { label: "Button Text", name: "buttonText", widget: "string" },
-            { label: "Button Link", name: "buttonLink", widget: "string" }
-          ]
-        }
-      - { label: "Mission Section", name: "mission", widget: "object",
-          fields: [
-            { label: "Title", name: "title", widget: "string" },
-            { label: "Mission Statement", name: "statement", widget: "text" },
-            { label: "Values", name: "values", widget: "list",
-              fields: [
-                { label: "Title", name: "title", widget: "string" },
-                { label: "Description", name: "description", widget: "text" }
-              ]
-            }
-          ]
-        }
+      - label: "Welcome Section"
+        name: "welcome"
+        widget: "object"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - label: "Description"
+            name: "description"
+            widget: "list"
+            field:
+              label: "Description Item"
+              name: "item"
+              widget: "text"
+          - { label: "Logo Image", name: "logoImage", widget: "image" }
+          - { label: "Button Text", name: "buttonText", widget: "string" }
+          - { label: "Button Link", name: "buttonLink", widget: "string" }
+      - label: "Mission Section"
+        name: "mission"
+        widget: "object"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Mission Statement", name: "statement", widget: "text" }
+          - label: "Values"
+            name: "values"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
