@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/layout/Layout';
 import Hero from '../components/common/Hero';
-import axios from 'axios';
-import sponsorsData from '../data/sponsors.json';
 import dataService, { Sponsor } from '../services/dataService';
 
 
@@ -89,20 +87,10 @@ const SponsorsPage: React.FC = () => {
     const fetchedSponsors = dataService.getAllSponsors();
     setSponsors(fetchedSponsors);
   }, []);
-
   // Filter sponsors by tier
   const filteredSponsors = activeTier === 'all' 
     ? sponsors 
     : sponsors.filter(sponsor => sponsor.tier === activeTier);
-
-  // Group sponsors by tier for display
-  const sponsorsByTier = filteredSponsors.reduce((acc, sponsor) => {
-    if (!acc[sponsor.tier]) {
-      acc[sponsor.tier] = [];
-    }
-    acc[sponsor.tier].push(sponsor);
-    return acc;
-  }, {} as Record<string, Sponsor[]>);
 
   // Order of tiers for display
   const tierOrder = ['platinum', 'gold', 'silver', 'bronze', 'partner'];
