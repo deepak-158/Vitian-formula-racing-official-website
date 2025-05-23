@@ -17,19 +17,22 @@ interface Achievement {
 const AboutPage: React.FC = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
-
   useEffect(() => {
-    // Fetch achievements data
-    const fetchedAchievements = dataService.getAllAchievements();
-    setAchievements(fetchedAchievements);
-    
-    // Fetch team info data
-    try {
-      const info = dataService.getTeamInfo();
-      setTeamInfo(info);
-    } catch (error) {
-      console.error('Error loading team info:', error);
-    }
+    const loadData = async () => {
+      try {
+        // Fetch achievements data
+        const fetchedAchievements = await dataService.getAllAchievements();
+        setAchievements(fetchedAchievements);
+        
+        // Fetch team info data
+        const info = await dataService.getTeamInfo();
+        setTeamInfo(info);
+      } catch (error) {
+        console.error('Error loading about page data:', error);
+      }
+    };
+
+    loadData();
   }, []);
 
   return (

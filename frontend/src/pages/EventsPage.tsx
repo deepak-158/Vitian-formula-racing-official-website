@@ -17,21 +17,25 @@ const EventsPage: React.FC = () => {
 
   // Fetch events from dataService
   useEffect(() => {
-    try {
-      setLoading(true);
-      startLoading();
-      
-      // Get all events from data service
-      const allEvents = dataService.getAllEvents();
-      setEvents(allEvents);
-      setError(null);
-    } catch (err) {
-      console.error("Error loading events:", err);
-      setError("Failed to load events. Please try again later.");
-    } finally {
-      setLoading(false);
-      stopLoading();
-    }
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        startLoading();
+        
+        // Get all events from data service
+        const allEvents = await dataService.getAllEvents();
+        setEvents(allEvents);
+        setError(null);
+      } catch (err) {
+        console.error("Error loading events:", err);
+        setError("Failed to load events. Please try again later.");
+      } finally {
+        setLoading(false);
+        stopLoading();
+      }
+    };
+    
+    fetchEvents();
   }, [startLoading, stopLoading]);
 
   // Format date

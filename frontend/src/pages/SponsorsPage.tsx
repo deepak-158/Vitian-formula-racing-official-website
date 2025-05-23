@@ -69,23 +69,16 @@ const SponsorsPage: React.FC = () => {
 
   // This will be used when backend is connected
   useEffect(() => {
-    // Comment out this section until backend is ready
-    /*
-    const fetchSponsors = async () => {
+    const loadSponsors = async () => {
       try {
-        const response = await axios.get('/api/sponsors');
-        setSponsors(response.data);
+        const fetchedSponsors = await dataService.getAllSponsors();
+        setSponsors(fetchedSponsors);
       } catch (err) {
         console.error('Error fetching sponsors:', err);
-        // Fall back to placeholder data
-        setSponsors(PLACEHOLDER_SPONSORS);
       }
     };
-
-    fetchSponsors();
-    */
-    const fetchedSponsors = dataService.getAllSponsors();
-    setSponsors(fetchedSponsors);
+    
+    loadSponsors();
   }, []);
   // Filter sponsors by tier
   const filteredSponsors = activeTier === 'all' 
@@ -564,4 +557,4 @@ const SponsorsPage: React.FC = () => {
   );
 };
 
-export default SponsorsPage; 
+export default SponsorsPage;

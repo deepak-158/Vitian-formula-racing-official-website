@@ -18,21 +18,25 @@ const GalleryPage: React.FC = () => {  const [images, setImages] = useState<Gall
 
   // Fetch images from data service
   useEffect(() => {
-    setLoading(true);
-    startLoading();
+    const fetchImages = async () => {
+      try {
+        setLoading(true);
+        startLoading();
+        
+        // Fetch gallery items using data service
+        const galleryItems = await dataService.getAllGalleryItems();
+        setImages(galleryItems);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching gallery images:', err);
+        setError('Failed to load gallery. Please try again later.');
+      } finally {
+        setLoading(false);
+        stopLoading();
+      }
+    };
     
-    try {
-      // Fetch gallery items using data service
-      const galleryItems = dataService.getAllGalleryItems();
-      setImages(galleryItems);
-      setError(null);
-    } catch (err) {
-      console.error('Error fetching gallery images:', err);
-      setError('Failed to load gallery. Please try again later.');
-    } finally {
-      setLoading(false);
-      stopLoading();
-    }
+    fetchImages();
   }, [startLoading, stopLoading]);
 
   // Format date
@@ -342,4 +346,4 @@ const GalleryPage: React.FC = () => {  const [images, setImages] = useState<Gall
   );
 };
 
-export default GalleryPage; 
+export default GalleryPage;

@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import dataService, { Member } from '../services/dataService';
 
 const MembersList: React.FC = () => {
-  const members = dataService.getAllMembers();
+  const [members, setMembers] = useState<Member[]>([]);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const allMembers = await dataService.getAllMembers();
+        setMembers(allMembers);
+      } catch (error) {
+        console.error('Error loading members:', error);
+      }
+    };
+
+    fetchMembers();
+  }, []);
 
   return (
     <div className="members-list">

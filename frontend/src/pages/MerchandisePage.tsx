@@ -181,7 +181,7 @@ const MerchandisePage: React.FC = () => {
       startLoading();
       try {
         // Get merchandise data from dataService
-        const merchandiseData = dataService.getAllMerchandise();
+        const merchandiseData = await dataService.getAllMerchandise();
         console.log('Merchandise data loaded:', merchandiseData);
         
         // Map merchandise data to Product format
@@ -705,4 +705,4 @@ const MerchandisePage: React.FC = () => {
   );
 };
 
-export default MerchandisePage; 
+export default MerchandisePage;

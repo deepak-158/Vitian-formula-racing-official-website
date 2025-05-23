@@ -4,7 +4,7 @@
 const API_BASE_URL = window.location.origin;
 
 // Helper function to fetch JSON from a URL
-const fetchJSON = async (url) => {
+const fetchJSON = async (url: string) => {
   try {
     console.log(`Fetching data from: ${url}`);
     const response = await fetch(url);

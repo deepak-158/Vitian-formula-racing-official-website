@@ -10,11 +10,18 @@ interface FeaturedCardsProps {
 const FeaturedCards: React.FC<FeaturedCardsProps> = ({ className = '' }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [journeyItems, setJourneyItems] = useState<RacingJourney[]>([]);
-
   useEffect(() => {
     // Fetch racing journey items from data service
-    const items = dataService.getAllRacingJourneyItems();
-    setJourneyItems(items);
+    const fetchData = async () => {
+      try {
+        const items = await dataService.getAllRacingJourneyItems();
+        setJourneyItems(items);
+      } catch (error) {
+        console.error('Error loading racing journey items:', error);
+      }
+    };
+    
+    fetchData();
   }, []);
 
   return (

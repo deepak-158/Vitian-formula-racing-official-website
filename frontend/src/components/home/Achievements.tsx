@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SectionTitle from '../common/SectionTitle';
 import Card from '../common/Card';
-import dataService from '../../services/dataService';
+import dataService, { Achievement } from '../../services/dataService';
 
 // Mock data - would come from API in a real implementation
 // const achievements = [
@@ -33,12 +33,19 @@ import dataService from '../../services/dataService';
 // ];
 
 const Achievements: React.FC = () => {
-  const [achievements, setAchievements] = useState<any[]>([]);
-
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
   useEffect(() => {
     // Get the top 3 recent achievements
-    const recentAchievements = dataService.getRecentAchievements(3);
-    setAchievements(recentAchievements);
+    const fetchAchievements = async () => {
+      try {
+        const recentAchievements = await dataService.getRecentAchievements(3);
+        setAchievements(recentAchievements);
+      } catch (error) {
+        console.error('Error loading recent achievements:', error);
+      }
+    };
+    
+    fetchAchievements();
   }, []);
 
   return (

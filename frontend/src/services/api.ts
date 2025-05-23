@@ -11,10 +11,10 @@ export const membersService = {
   },
 
   getById: async (id: string): Promise<Member> => {
-    const member = dataService.getMemberById(id);
+    const member = await dataService.getMemberById(id);
     if (!member) throw new Error(`Member with ID ${id} not found`);
     return member;
-}
+  }
 };
 
 // Compatibility layer for the projects service
@@ -24,7 +24,7 @@ export const projectsService = {
   },
 
   getById: async (id: string): Promise<Project> => {
-    const project = dataService.getProjectById(id);
+    const project = await dataService.getProjectById(id);
     if (!project) throw new Error(`Project with ID ${id} not found`);
     return project;
   }
@@ -33,4 +33,4 @@ export const projectsService = {
 // Always return true for backend connection check - no need to check anymore since we're using static files
 export const checkBackendConnection = async (): Promise<boolean> => {
   return true;
-}; 
+};

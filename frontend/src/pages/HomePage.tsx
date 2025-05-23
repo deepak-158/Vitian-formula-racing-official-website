@@ -10,12 +10,16 @@ const HomePage: React.FC = () => {
   const [teamInfo, setTeamInfo] = useState<TeamInfo | null>(null);
   
   useEffect(() => {
-    try {
-      const info = dataService.getTeamInfo();
-      setTeamInfo(info);
-    } catch (error) {
-      console.error('Error loading team info:', error);
-    }
+    const loadTeamInfo = async () => {
+      try {
+        const info = await dataService.getTeamInfo();
+        setTeamInfo(info);
+      } catch (error) {
+        console.error('Error loading team info:', error);
+      }
+    };
+    
+    loadTeamInfo();
   }, []);
 
   return (
@@ -134,4 +138,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

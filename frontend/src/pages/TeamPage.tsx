@@ -16,27 +16,31 @@ const TeamPage: React.FC = () => {
 
   // Fetch members from dataService
   useEffect(() => {
-    try {
-      setLoading(true);
-      // Get all members from the data service
-      const members = dataService.getAllMembers();
-      
-      // Transform the data to match the TeamMember interface
-      const transformedMembers: TeamMember[] = members.map(member => ({
-        ...member,
-        specialty: member.role.includes('Engineer') ? 'Engineering' : 
-                  member.role.includes('Tech') ? 'Technology' : 
-                  member.role.includes('Captain') ? 'Leadership' : 'Other'
-      }));
-      
-      setTeamMembers(transformedMembers);
-      setError(null);
-    } catch (err) {
-      console.error('Error loading team members:', err);
-      setError('Failed to load team members. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
+    const loadMembers = async () => {
+      try {
+        setLoading(true);
+        // Get all members from the data service
+        const members = await dataService.getAllMembers();
+        
+        // Transform the data to match the TeamMember interface
+        const transformedMembers: TeamMember[] = members.map(member => ({
+          ...member,
+          specialty: member.role.includes('Engineer') ? 'Engineering' : 
+                    member.role.includes('Tech') ? 'Technology' : 
+                    member.role.includes('Captain') ? 'Leadership' : 'Other'
+        }));
+        
+        setTeamMembers(transformedMembers);
+        setError(null);
+      } catch (err) {
+        console.error('Error loading team members:', err);
+        setError('Failed to load team members. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMembers();
   }, []);
 
   // Filter members by category
