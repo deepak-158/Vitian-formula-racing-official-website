@@ -600,6 +600,9 @@ const ContactPage: React.FC = () => {
                     borderRadius: '0.5rem'
                   }}
                   title="VIT Bhopal University Map"
+                  sandbox="allow-scripts allow-same-origin"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
                 <p style={{ 
                   color: '#6b7280', 
