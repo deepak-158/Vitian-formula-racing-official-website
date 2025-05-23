@@ -4,21 +4,358 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VIT Bhopal Racing Team - Content Manager</title>
+  <link rel="stylesheet" href="https://unpkg.com/tui-image-editor@3.15.2/dist/tui-image-editor.css">
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.css">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #editor-container {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-header {
+      background: #1a202c;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .editor-frame {
+      flex: 1;
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    .sidebar {
+      width: 250px;
+      background: #f7fafc;
+      border-right: 1px solid #e2e8f0;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    .content-area {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .member-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 0.375rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .member-card:hover {
+      border-color: #4299e1;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .member-card.active {
+      border-color: #4299e1;
+      background-color: #ebf8ff;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.25rem;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #4299e1;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    button:hover {
+      background-color: #3182ce;
+    }
+    .button-danger {
+      background-color: #f56565;
+    }
+    .button-danger:hover {
+      background-color: #e53e3e;
+    }
+    #notification {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      background-color: #48bb78;
+      color: white;
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <!-- Include the script that builds the page and powers Netlify CMS -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/netlify-cms@^2.10.192/dist/netlify-cms.js"></script>
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
+  <div id="editor-container">
+    <div class="admin-header">
+      <h1>Team Members Editor</h1>
+      <div>
+        <button id="new-member-btn">+ New Member</button>
+        <button id="save-all-btn">Save All Changes</button>
+      </div>
+    </div>
+    
+    <div class="editor-frame">
+      <div class="sidebar" id="members-list">
+        <!-- Member list will be populated here -->
+        <div class="loading">Loading members...</div>
+      </div>
+      
+      <div class="content-area" id="editor-content">
+        <h2>Select a member to edit</h2>
+        <p>Click on a team member from the sidebar to edit their details, or click "New Member" to add someone new.</p>
+      </div>
+    </div>
+  </div>
+  
+  <div id="notification">Changes saved successfully!</div>
+
+  <script type="module">
+    // Main CMS functionality
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load the team members data
+      let members = [];
+      let currentMember = null;
+      
+      try {
+        const response = await fetch('/data/members.json');
+        if (!response.ok) throw new Error('Failed to load members data');
+        members = await response.json();
+        renderMembersList();
+      } catch (error) {
+        console.error('Error loading members:', error);
+        document.getElementById('members-list').innerHTML = 
+          '<div class="error">Error loading members. Please refresh the page.</div>';
+      }
+      
+      // Event listeners
+      document.getElementById('new-member-btn').addEventListener('click', createNewMember);
+      document.getElementById('save-all-btn').addEventListener('click', saveAllChanges);
+      
+      // Functions
+      function renderMembersList() {
+        const listContainer = document.getElementById('members-list');
+        listContainer.innerHTML = '';
+        
+        members.forEach((member, index) => {
+          const memberCard = document.createElement('div');
+          memberCard.className = 'member-card';
+          memberCard.dataset.index = index;
+          memberCard.innerHTML = `
+            <h3>${member.name}</h3>
+            <p>${member.role}</p>
+          `;
+          
+          memberCard.addEventListener('click', () => {
+            document.querySelectorAll('.member-card').forEach(card => {
+              card.classList.remove('active');
+            });
+            memberCard.classList.add('active');
+            editMember(index);
           });
+          
+          listContainer.appendChild(memberCard);
+        });
+        
+        if (members.length === 0) {
+          listContainer.innerHTML = '<p>No members found. Create a new one!</p>';
         }
-      });
-    }
+      }
+      
+      function editMember(index) {
+        currentMember = index;
+        const member = members[index];
+        
+        const editorContent = document.getElementById('editor-content');
+        editorContent.innerHTML = `
+          <h2>Edit Team Member</h2>
+          <form id="member-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" value="${member.name || ''}" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="role">Role</label>
+              <input type="text" id="role" value="${member.role || ''}" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="bio">Bio</label>
+              <textarea id="bio" rows="4" required>${member.bio || ''}</textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="image_url">Image URL</label>
+              <input type="text" id="image_url" value="${member.image_url || ''}" required>
+            </div>
+            
+            <h3>Social Links</h3>
+            
+            <div class="form-group">
+              <label for="linkedin">LinkedIn URL</label>
+              <input type="text" id="linkedin" value="${member.social_links?.linkedin || ''}">
+            </div>
+            
+            <div class="form-group">
+              <label for="twitter">Twitter URL</label>
+              <input type="text" id="twitter" value="${member.social_links?.twitter || ''}">
+            </div>
+            
+            <div class="form-group">
+              <label for="github">GitHub URL</label>
+              <input type="text" id="github" value="${member.social_links?.github || ''}">
+            </div>
+            
+            <div>
+              <button type="button" id="update-member-btn">Update Member</button>
+              <button type="button" id="delete-member-btn" class="button-danger">Delete Member</button>
+            </div>
+          </form>
+        `;
+        
+        document.getElementById('update-member-btn').addEventListener('click', () => updateMember(index));
+        document.getElementById('delete-member-btn').addEventListener('click', () => deleteMember(index));
+      }
+      
+      function updateMember(index) {
+        const member = members[index];
+        
+        member.name = document.getElementById('name').value;
+        member.role = document.getElementById('role').value;
+        member.bio = document.getElementById('bio').value;
+        member.image_url = document.getElementById('image_url').value;
+        
+        member.social_links = member.social_links || {};
+        member.social_links.linkedin = document.getElementById('linkedin').value;
+        member.social_links.twitter = document.getElementById('twitter').value;
+        member.social_links.github = document.getElementById('github').value;
+        
+        // Update the list display
+        renderMembersList();
+        
+        // Show notification
+        showNotification('Member updated! Don\'t forget to save all changes.');
+      }
+      
+      function deleteMember(index) {
+        if (confirm('Are you sure you want to delete this member?')) {
+          members.splice(index, 1);
+          renderMembersList();
+          
+          document.getElementById('editor-content').innerHTML = `
+            <h2>Select a member to edit</h2>
+            <p>Member deleted. Click on another team member to edit, or click "New Member" to add someone new.</p>
+          `;
+          
+          showNotification('Member deleted! Don\'t forget to save all changes.');
+        }
+      }
+      
+      function createNewMember() {
+        const newId = members.length > 0 
+          ? String(Math.max(...members.map(m => parseInt(m.id, 10))) + 1) 
+          : "1";
+          
+        const newMember = {
+          id: newId,
+          name: "New Team Member",
+          role: "Role Title",
+          bio: "Bio information goes here",
+          image_url: "/images/team/placeholder.jpg",
+          social_links: {
+            linkedin: "",
+            twitter: "",
+            github: ""
+          }
+        };
+        
+        members.push(newMember);
+        renderMembersList();
+        
+        // Select the new member
+        editMember(members.length - 1);
+        
+        // Highlight the new member in the list
+        const cards = document.querySelectorAll('.member-card');
+        cards.forEach(card => card.classList.remove('active'));
+        cards[cards.length - 1].classList.add('active');
+        
+        showNotification('New member created! Don\'t forget to save all changes.');
+      }
+      
+      async function saveAllChanges() {
+        try {
+          // In a real environment, this would be an API call
+          // For now, we'll use the netlify function we created
+          
+          // Create a form to POST the data
+          const form = new FormData();
+          form.append('data', JSON.stringify(members));
+          
+          const response = await fetch('/.netlify/functions/update-members', {
+            method: 'POST',
+            body: form
+          });
+          
+          if (!response.ok) throw new Error('Failed to save members data');
+          
+          showNotification('All changes saved successfully!');
+          
+          // Reload the data to ensure we have the latest
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } catch (error) {
+          console.error('Error saving members:', error);
+          alert('Error saving changes. Please try again or download the JSON file.');
+          
+          // Fallback: Let user download the JSON
+          const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(members, null, 2));
+          const downloadAnchorNode = document.createElement('a');
+          downloadAnchorNode.setAttribute("href", dataStr);
+          downloadAnchorNode.setAttribute("download", "members.json");
+          document.body.appendChild(downloadAnchorNode);
+          downloadAnchorNode.click();
+          downloadAnchorNode.remove();
+        }
+      }
+      
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.display = 'block';
+        
+        setTimeout(() => {
+          notification.style.display = 'none';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
   </script>
 </body>
 </html>

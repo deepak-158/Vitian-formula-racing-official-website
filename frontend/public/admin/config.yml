@@ -9,28 +9,24 @@ public_folder: "/images/team" # The src attribute for uploaded media will begin 
 collections:
   - name: "team"
     label: "Team Members"
-    folder: "src/data"
-    format: "json"
-    create: true
-    slug: "{{slug}}"
-    identifier_field: "name"
-    extension: "json"
-    editor:
-      preview: false
     files:
       - label: "Team Members"
         name: "members"
         file: "src/data/members.json"
         fields:
-      - {label: "ID", name: "id", widget: "string"}
-      - {label: "Name", name: "name", widget: "string"}
-      - {label: "Role", name: "role", widget: "string"}
-      - {label: "Bio", name: "bio", widget: "text"}
-      - {label: "Profile Image", name: "image_url", widget: "image"}
-      - label: "Social Links"
-        name: "social_links"
-        widget: "object"
-        fields:
-          - {label: "LinkedIn", name: "linkedin", widget: "string", required: false}
-          - {label: "Twitter", name: "twitter", widget: "string", required: false}
-          - {label: "GitHub", name: "github", widget: "string", required: false}
+          - label: "Members"
+            name: "members"
+            widget: "list"
+            fields:
+              - {label: "ID", name: "id", widget: "string"}
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "Role", name: "role", widget: "string"}
+              - {label: "Bio", name: "bio", widget: "text"}
+              - {label: "Profile Image", name: "image_url", widget: "image"}
+              - label: "Social Links"
+                name: "social_links"
+                widget: "object"
+                fields:
+                  - {label: "LinkedIn", name: "linkedin", widget: "string", required: false}
+                  - {label: "Twitter", name: "twitter", widget: "string", required: false}
+                  - {label: "GitHub", name: "github", widget: "string", required: false}
