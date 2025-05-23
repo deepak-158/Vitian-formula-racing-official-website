@@ -2,14 +2,7 @@ backend:
   name: git-gateway
   branch: main # Branch to update (optional; defaults to master)
 
-media_folder: "publ          - {label: "ID", name: "id", widget: "string"}
-          - {label: "Title", name: "title", widget: "string"}
-          - {label: "Description", name: "description", widget: "text"}
-          - {label: "Date", name: "date", widget: "string"}
-          - {label: "Venue", name: "venue", widget: "string"}
-          - {label: "Category", name: "category", widget: "string"}
-          - {label: "Image URL", name: "imageUrl", widget: "string"}
-          - {label: "Additional Awards", name: "additionalAwards", widget: "list", required: false}s" # Media files will be stored in the repo under public/images
+media_folder: "public/images" # Media files will be stored in the repo under public/images
 public_folder: "/images" # The src attribute for uploaded media will begin with /images
 
 collections:
@@ -103,12 +96,12 @@ collections:
           - {label: "ID", name: "id", widget: "string"}
           - {label: "Title", name: "title", widget: "string"}
           - {label: "Content", name: "content", widget: "markdown"}
-          - {label: "Summary", name: "summary", widget: "text"}
-          - {label: "Date", name: "date", widget: "string"}
+          - {label: "Summary", name: "summary", widget: "text"}          - {label: "Date", name: "date", widget: "string"}
           - {label: "Author", name: "author", widget: "string"}
           - {label: "Category", name: "category", widget: "string"}
           - {label: "Image URL", name: "imageUrl", widget: "string"}
           - {label: "Tags", name: "tags", widget: "list"}
+
   - name: "achievements"
     label: "Achievements"
     folder: "src/data/achievements.json"
