@@ -1,10 +1,22 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../components/layout/Layout';
 import Hero from '../components/common/Hero';
 
 const ContactPage: React.FC = () => {
   const contactFormRef = useRef<HTMLDivElement>(null);
-  const GOOGLE_FORM_URL = 'https://forms.gle/FTh9Yj6emU3rczer5';
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+    image: null as File | null
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' });
 
   // Function to scroll to contact form
   const scrollToContactForm = () => {
@@ -32,6 +44,75 @@ const ContactPage: React.FC = () => {
     }
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+
+    try {
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+      
+      // Remove the file if no image was selected
+      if (!formState.image) {
+        formData.delete('image');
+      }
+
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'multipart/form-data' },
+        body: formData,
+      });
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you for your message! We will get back to you soon.'
+      });
+      
+      // Reset form
+      setFormState({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+        image: null
+      });
+
+      // Reset the file input
+      const fileInput = form.querySelector('input[type="file"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Something went wrong. Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormState(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormState(prev => ({
+        ...prev,
+        image: e.target.files![0]
+      }));
+    }
+  };
+
   return (
     <Layout>
       <Hero
@@ -39,7 +120,7 @@ const ContactPage: React.FC = () => {
         subtitle="Get in touch with our team for inquiries, partnerships, or to join us"
         backgroundImage="/images/hero/contact-hero.svg"
         buttonText="CONTACT US"
-        buttonLink="#" // Using # to prevent navigation
+        buttonLink="#"
         buttonType="primary" 
         buttonSize="lg"
       />
@@ -215,88 +296,252 @@ const ContactPage: React.FC = () => {
                 color: '#4b5563',
                 marginBottom: '1.5rem'
               }}>
-                Fill out our Google Form to contact us. We'll get back to you as soon as possible.
+                Fill out the form below and we'll get back to you as soon as possible.
               </p>
               
-              <div style={{ 
-                display: 'flex', 
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '2rem',
-                backgroundColor: '#f9fafb',
-                borderRadius: '0.5rem',
-                textAlign: 'center'
-              }}>
+              <form
+                name="contact"
+                method="POST"
+                data-netlify="true"
+                data-netlify-honeypot="bot-field"
+                encType="multipart/form-data"
+                onSubmit={handleSubmit}
+                style={{
+                  backgroundColor: 'white',
+                  padding: '2rem',
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}
+              >
+                <input type="hidden" name="form-name" value="contact" />
+                <div style={{ display: 'none' }}>
+                  <label>
+                    Don't fill this out if you're human: 
+                    <input name="bot-field" />
+                  </label>
+                </div>
+
+                {submitStatus.type && (
+                  <div
+                    style={{
+                      padding: '1rem',
+                      marginBottom: '1rem',
+                      borderRadius: '0.375rem',
+                      backgroundColor: submitStatus.type === 'success' ? '#ecfdf5' : '#fef2f2',
+                      color: submitStatus.type === 'success' ? '#065f46' : '#991b1b'
+                    }}
+                  >
+                    {submitStatus.message}
+                  </div>
+                )}
+
                 <div style={{ marginBottom: '1.5rem' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="var(--color-primary-600)">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V8l6.94 4.34c.65.41 1.47.41 2.12 0L20 8v9c0 .55-.45 1-1 1zm-7-7L4 6h16l-8 5z"/>
-                  </svg>
-                </div>
-                <h3 style={{
-                  fontSize: '1.5rem',
-                  fontWeight: '600',
-                  color: '#111827',
-                  marginBottom: '1rem'
-                }}>
-                  Contact Form
-                </h3>
-                <p style={{
-                  color: '#4b5563',
-                  marginBottom: '1.5rem',
-                  maxWidth: '400px'
-                }}>
-                  Click the button below to open our contact form in a new tab. Fill in your details and we'll get back to you soon.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-                  <a
-                    href={GOOGLE_FORM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-primary"
+                  <label
+                    htmlFor="name"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '500',
-                      borderRadius: '0.375rem',
-                      gap: '0.5rem'
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
                     }}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '0.5rem' }}>
-                      <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM5 15h14v2H5v-2zm0-8h14v2H5V7zm0 4h14v2H5v-2z"/>
-                    </svg>
-                    Google Form
-                  </a>
-                  
-                  <a
-                    href="https://wa.me/917024043090"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn"
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formState.name}
+                    onChange={handleInputChange}
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '1rem',
-                      fontWeight: '500',
+                      width: '100%',
+                      padding: '0.75rem',
                       borderRadius: '0.375rem',
-                      gap: '0.5rem',
-                      backgroundColor: '#25D366', // WhatsApp green
-                      color: 'white'
+                      border: '1px solid #d1d5db',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    htmlFor="email"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
                     }}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '0.5rem' }}>
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    WhatsApp
-                  </a>
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formState.email}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '1rem'
+                    }}
+                  />
                 </div>
-              </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    htmlFor="phone"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    pattern="[0-9]{10}"
+                    placeholder="Enter 10-digit phone number"
+                    value={formState.phone}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    htmlFor="subject"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Subject *
+                  </label>
+                  <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                    value={formState.subject}
+                    onChange={handleInputChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    htmlFor="message"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Message *
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    value={formState.message}
+                    onChange={handleInputChange}
+                    rows={4}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      borderRadius: '0.375rem',
+                      border: '1px solid #d1d5db',
+                      fontSize: '1rem',
+                      resize: 'vertical'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label
+                    htmlFor="image"
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      color: '#374151',
+                      fontSize: '0.875rem',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Attach Image
+                  </label>
+                  <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem 0',
+                      fontSize: '1rem'
+                    }}
+                  />
+                  <p style={{
+                    fontSize: '0.75rem',
+                    color: '#6b7280',
+                    marginTop: '0.25rem'
+                  }}>
+                    Supported formats: JPG, PNG, GIF (max 5MB)
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0.75rem 1.5rem',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    borderRadius: '0.375rem',
+                    backgroundColor: 'var(--color-primary-600)',
+                    color: 'white',
+                    border: 'none',
+                    cursor: isSubmitting ? 'wait' : 'pointer',
+                    opacity: isSubmitting ? 0.7 : 1
+                  }}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </button>
+              </form>
             </div>
             
             {/* Map and Social Links */}
@@ -399,4 +644,4 @@ const ContactPage: React.FC = () => {
   );
 };
 
-export default ContactPage; 
+export default ContactPage;
