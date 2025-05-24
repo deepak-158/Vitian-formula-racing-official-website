@@ -1,5 +1,3 @@
-const jwt = require('jsonwebtoken');
-
 exports.handler = async (event, context) => {
   // Allow preflight requests
   if (event.httpMethod === 'OPTIONS') {
@@ -15,43 +13,17 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    // Get authorization header
-    const authHeader = event.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Get user from Netlify context (available when using Netlify Identity)
+    const { user } = context.clientContext || {};
+    
+    if (!user) {
       return {
         statusCode: 401,
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ error: 'No valid token provided' }),
-      };
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-
-    // Verify JWT token using Netlify's public key
-    // Note: In a real implementation, you would fetch Netlify's public key
-    // For now, we'll do basic token validation
-    let user;
-    try {
-      // Decode without verification for demo purposes
-      // In production, you should verify the signature
-      const decoded = jwt.decode(token);
-      
-      if (!decoded || !decoded.email) {
-        throw new Error('Invalid token structure');
-      }
-      
-      user = decoded;
-    } catch (error) {
-      return {
-        statusCode: 401,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ error: 'Invalid token' }),
+        body: JSON.stringify({ error: 'Authentication required' }),
       };
     }
 
@@ -122,7 +94,7 @@ function checkAdminAccess(user) {
   
   // For demo purposes, allow specific test emails
   const defaultAdminEmails = [
-    'admin@example.com',
+    'devotiontrue@gmail.com',
     'administrator@vitian.edu.in',
     'cms.admin@racing.team'
   ];
