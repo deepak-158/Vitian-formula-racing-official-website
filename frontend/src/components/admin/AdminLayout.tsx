@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { refreshData } from '../../utils/dataRefresh';
 
 // Admin CSS styles
 const adminStyles = {
@@ -67,9 +68,27 @@ interface AdminLayoutProps {
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { logout } = useAuth();
   const location = useLocation();
+  const [refreshing, setRefreshing] = useState(false);
   
   const handleLogout = () => {
     logout();
+  };
+  
+  const handleRefreshData = async () => {
+    setRefreshing(true);
+    try {
+      const success = await refreshData();
+      if (success) {
+        alert('Data refreshed successfully!');
+      } else {
+        alert('Failed to refresh data. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      alert('An error occurred while refreshing data.');
+    } finally {
+      setRefreshing(false);
+    }
   };
   
   const isActive = (path: string) => {
@@ -80,17 +99,19 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Header */}
       <header style={adminStyles.header}>
         <h1>Racing Team CMS</h1>
-        <div style={adminStyles.headerActions}>
-          <button 
+        <div style={adminStyles.headerActions}>          <button 
             style={{
               ...adminStyles.logoutButton, 
               background: '#1a1a1a',
-              color: 'white'
+              color: 'white',
+              opacity: refreshing ? 0.7 : 1,
+              cursor: refreshing ? 'not-allowed' : 'pointer'
             }}
-            onClick={() => window.location.href = '/api/refresh-data'}
+            onClick={handleRefreshData}
             title="Refresh data files in public directory"
+            disabled={refreshing}
           >
-            Refresh Data
+            {refreshing ? 'Refreshing...' : 'Refresh Data'}
           </button>
           <button 
             style={adminStyles.logoutButton}

@@ -98,7 +98,6 @@ const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState<{ label: string; count: number; icon: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -107,25 +106,55 @@ const AdminDashboard: React.FC = () => {
         // Create an array to store our stats
         const statsData = [];
         
-        // Fetch each data type and add its count to stats
-        const members = await adminCmsService.getMembers();
-        statsData.push({ label: 'Team Members', count: members.length, icon: '👥' });
+        // Fetch each data type and add its count to stats, with error handling for each
+        try {
+          const members = await adminCmsService.getMembers();
+          statsData.push({ label: 'Team Members', count: members.length, icon: '👥' });
+        } catch (e) {
+          console.error('Error fetching members:', e);
+          statsData.push({ label: 'Team Members', count: 0, icon: '👥' });
+        }
         
-        const projects = await adminCmsService.getProjects();
-        statsData.push({ label: 'Projects', count: projects.length, icon: '🏎️' });
+        try {
+          const projects = await adminCmsService.getProjects();
+          statsData.push({ label: 'Projects', count: projects.length, icon: '🏎️' });
+        } catch (e) {
+          console.error('Error fetching projects:', e);
+          statsData.push({ label: 'Projects', count: 0, icon: '🏎️' });
+        }
         
-        const events = await adminCmsService.getEvents();
-        statsData.push({ label: 'Events', count: events.length, icon: '📅' });
+        try {
+          const events = await adminCmsService.getEvents();
+          statsData.push({ label: 'Events', count: events.length, icon: '📅' });
+        } catch (e) {
+          console.error('Error fetching events:', e);
+          statsData.push({ label: 'Events', count: 0, icon: '📅' });
+        }
         
-        const sponsors = await adminCmsService.getSponsors();
-        statsData.push({ label: 'Sponsors', count: sponsors.length, icon: '🤝' });
+        try {
+          const sponsors = await adminCmsService.getSponsors();
+          statsData.push({ label: 'Sponsors', count: sponsors.length, icon: '🤝' });
+        } catch (e) {
+          console.error('Error fetching sponsors:', e);
+          statsData.push({ label: 'Sponsors', count: 0, icon: '🤝' });
+        }
         
         // Add more items if you want to show more stats
-        const news = await adminCmsService.getNews();
-        statsData.push({ label: 'News Articles', count: news.length, icon: '📰' });
+        try {
+          const news = await adminCmsService.getNews();
+          statsData.push({ label: 'News Articles', count: news.length, icon: '📰' });
+        } catch (e) {
+          console.error('Error fetching news:', e);
+          statsData.push({ label: 'News Articles', count: 0, icon: '📰' });
+        }
         
-        const gallery = await adminCmsService.getGallery();
-        statsData.push({ label: 'Gallery Items', count: gallery.length, icon: '🖼️' });
+        try {
+          const gallery = await adminCmsService.getGallery();
+          statsData.push({ label: 'Gallery Items', count: gallery.length, icon: '🖼️' });
+        } catch (e) {
+          console.error('Error fetching gallery:', e);
+          statsData.push({ label: 'Gallery Items', count: 0, icon: '🖼️' });
+        }
         
         setStats(statsData);
         setLoading(false);

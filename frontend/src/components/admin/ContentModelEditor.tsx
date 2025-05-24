@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import JsonEditor from '../../components/admin/JsonEditor';
 import ImageUploader from '../../components/admin/ImageUploader';
-import adminCmsService from '../../services/adminCmsService';
 
 const adminPageStyles = {
   header: {
@@ -65,17 +64,12 @@ const ContentModelEditor: React.FC<ContentEditorProps> = ({
   imageFolder,
   fetchData,
   saveData,
-}) => {
-  const [data, setData] = useState<any>(null);
+}) => {  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('json-editor');
   
-  useEffect(() => {
-    loadData();
-  }, []);
-  
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -87,7 +81,11 @@ const ContentModelEditor: React.FC<ContentEditorProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchData, dataType]);
+  
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
   
   const handleSaveData = async (updatedData: any): Promise<boolean> => {
     try {

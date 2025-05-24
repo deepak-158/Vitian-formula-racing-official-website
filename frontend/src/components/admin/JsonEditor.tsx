@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getJsonDownloadUrl } from '../../services/adminCmsService';
-import { downloadJsonFile } from '../../utils/dataRefresh';
 
 // JSON Editor Component Styles
 const jsonEditorStyles = {
