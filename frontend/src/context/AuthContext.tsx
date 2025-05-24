@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import netlifyIdentity from 'netlify-identity-widget';
+// import netlifyIdentity from 'netlify-identity-widget'; // No longer needed
 
 interface User {
   id: string;
@@ -29,11 +29,17 @@ const AuthContext = createContext<AuthContextType>({
 
 // Netlify Identity implementation with invite-only access
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
-
+  const [isAuthenticated] = useState<boolean>(true); // Always authenticated
+  const [user] = useState<User | null>({
+    id: 'admin-user',
+    email: 'admin@racing.team',
+    full_name: 'Admin User'
+  }); // Always set a default admin user
+  const [isAdmin] = useState<boolean>(true); // Always admin
   useEffect(() => {
+    // Skip Netlify Identity initialization since we're bypassing authentication
+    console.log('Admin access granted without authentication');
+    /*
     // Initialize Netlify Identity
     netlifyIdentity.init({
       APIUrl: process.env.REACT_APP_NETLIFY_SITE_URL ? 
@@ -47,10 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsAdmin(checkAdminAccess(currentUser));
-    }
-
-    // Listen for auth state changes
-    netlifyIdentity.on('login', (user) => {
+    }    // Listen for auth state changes
+    netlifyIdentity.on('login', (user: any) => {
       console.log('User logged in:', user);
       setUser(user);
       setIsAuthenticated(true);
@@ -65,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAdmin(false);
     });
 
-    netlifyIdentity.on('error', (error) => {
+    netlifyIdentity.on('error', (error: any) => {
       console.error('Netlify Identity error:', error);
     });
 
@@ -75,9 +79,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       netlifyIdentity.off('logout');
       netlifyIdentity.off('error');
     };
-  }, []);
+    */  }, []);
 
-  // Check if user has admin access
+  /*
+  // Check if user has admin access - no longer needed
   const checkAdminAccess = (user: any): boolean => {
     if (!user) return false;
     
@@ -94,17 +99,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     return false;
   };
-
+  */
   const login = () => {
-    netlifyIdentity.open('login');
+    console.log('Login not required - admin access always granted');
+    // netlifyIdentity.open('login');
   };
 
   const signup = () => {
-    netlifyIdentity.open('signup');
+    console.log('Signup not required - admin access always granted');
+    // netlifyIdentity.open('signup');
   };
 
   const logout = () => {
-    netlifyIdentity.logout();
+    console.log('Logout disabled - admin access always maintained');
+    // netlifyIdentity.logout();
   };
 
   return (

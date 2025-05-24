@@ -1,6 +1,7 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Outlet } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom'; // No longer needed
+// import { useAuth } from '../../context/AuthContext'; // No longer needed
 
 interface ProtectedRouteProps {
   redirectPath?: string;
@@ -9,6 +10,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
   redirectPath = '/admin/login'
 }) => {
+  // Authentication bypassed - always allow access to admin routes
+  return <Outlet />;
+  
+  /*
   const { isAuthenticated, isAdmin } = useAuth();
   
   // If not authenticated at all, redirect to login
@@ -23,6 +28,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   
   // If authenticated and admin, allow access
   return <Outlet />;
+  */
 };
 
 export default ProtectedRoute;

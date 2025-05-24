@@ -66,7 +66,7 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { logout, user, isAdmin } = useAuth();
+  const { logout, user } = useAuth(); // Removed isAdmin as it's no longer used
   const location = useLocation();
   const [refreshing, setRefreshing] = useState(false);
   
@@ -94,7 +94,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-
+  // Always allow admin access - authentication bypassed
+  /*
   // Show access denied if user is not admin
   if (!isAdmin) {
     return (
@@ -135,6 +136,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       </div>
     );
   }
+  */
 
   return (
     <div style={adminStyles.wrapper}>

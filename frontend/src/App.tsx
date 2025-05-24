@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import TeamPage from './pages/TeamPage';
@@ -10,7 +10,7 @@ import GalleryPage from './pages/GalleryPage';
 import MerchandisePage from './pages/MerchandisePage';
 
 // Admin pages
-import LoginPage from './pages/admin/LoginPage';
+// import LoginPage from './pages/admin/LoginPage'; // No longer needed
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MembersEditorPage from './pages/admin/MembersEditorPage';
 import EventsEditorPage from './pages/admin/EventsEditorPage';
@@ -91,9 +91,8 @@ function AppRoutes() {
         <Route path="/sponsors" element={<SponsorsPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
         <Route path="/merchandise" element={<MerchandisePage />} />
-        
-        {/* Admin routes */}
-        <Route path="/admin/login" element={<LoginPage />} />
+          {/* Admin routes */}
+        <Route path="/admin/login" element={<Navigate to="/admin" replace />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/members" element={<MembersEditorPage />} />
