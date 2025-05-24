@@ -1,53 +1,54 @@
-# VIT Bhopal Racing Team - CMS Guide
+# Netlify CMS Setup Guide
 
-## Overview
+Follow these steps to set up Netlify CMS with identity management for your racing team website:
 
-The VIT Bhopal Racing Team website features a dual CMS system designed to accommodate different user needs and technical expertise levels.
+## 1. Deploy your site to Netlify
 
-## CMS Options
+- Push your code to GitHub/GitLab/BitBucket
+- Log in to [Netlify](https://app.netlify.com/)
+- Click "New site from Git" and connect your repository
+- Follow the steps to deploy
 
-### 1. Simple CMS
-**Best for:** Quick data viewing, content browsing, and basic data management
+## 2. Enable Netlify Identity
 
-**Features:**
-- 📊 **Data Visualization**: Clean, tabular view of all content
-- 🔍 **Search & Filter**: Easy navigation through content sections
-- 📥 **Export**: Download data as JSON files
-- 👁️ **Preview**: View content details without editing
-- 🚀 **Fast Access**: No authentication required for development
+- Go to your site settings in Netlify
+- Navigate to "Identity" in the left menu
+- Click "Enable Identity"
+- Under "Registration preferences," choose "Invite only" to restrict access
+- Scroll down to "Services" and enable "Git Gateway" to allow CMS to access Git
 
-### 2. Advanced CMS (Decap CMS)
-**Best for:** Full content management, editing, and publishing
+## 3. Configure External Providers (Optional)
 
-**Features:**
-- ✏️ **Rich Editor**: Full-featured content creation and editing
-- 🖼️ **Media Management**: Upload and organize images
-- 🔄 **Git Integration**: Version control and collaboration
-- 🔐 **Authentication**: Secure access control
-- 📝 **Markdown Support**: Rich text editing capabilities
+- If you want to allow login via GitHub or another provider:
+  - Scroll down to "External providers" 
+  - Click "Add provider" and select your preferred provider
+  - Follow the steps to set up OAuth
 
-## Getting Started
+## 4. Invite Users
 
-### For Simple CMS:
-1. Navigate to `/admin` or `/admin/simple-cms.html`
-2. Select a content section from the navigation
-3. Use the table to browse content
-4. Click actions to view details or export data
+- Go to the "Identity" tab
+- Click "Invite users"
+- Enter the email addresses of team members who should have access
+- They'll receive an invitation email with a link to set a password
 
-### For Advanced CMS:
-1. Navigate to `/admin` and select "Advanced CMS"
-2. **Development**: Automatically uses test backend
-3. **Production**: Requires Netlify Identity authentication
-4. Choose a collection to manage
-5. Use the rich editor for content creation/editing
+## 5. Access the CMS
 
-## Quick Reference
+- After deployment, go to your site at `/admin/` (e.g., `https://your-site.netlify.app/admin/`)
+- Log in with your invited email and password
+- You should now have access to edit the site content
 
-### URLs:
-- **Main CMS**: `/admin`
-- **Simple CMS**: `/admin/simple-cms.html`
-- **Advanced CMS**: `/admin?mode=advanced`
+## Updating Content
 
----
+1. Log in to the admin panel at `/admin/`
+2. Select the content type you want to edit (e.g., "Team Members")
+3. Make your changes
+4. Click "Save" to save your changes
+5. Click "Publish" to publish them to the site
 
-*Last Updated: May 2025*
+## Important Notes
+
+- Any changes made through the CMS are committed directly to your repository
+- After publishing changes, Netlify will automatically rebuild and deploy your site
+- The site preview may take a minute to update after publishing
+
+For more help, visit [Netlify CMS Documentation](https://www.netlifycms.org/docs/intro/)

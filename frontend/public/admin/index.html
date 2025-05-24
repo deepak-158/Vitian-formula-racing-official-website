@@ -4,126 +4,25 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VIT Bhopal Racing Team - Content Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      .cms-option {
-        transition: all 0.3s ease;
-        cursor: pointer;
-      }
-      .cms-option:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      }
-    </style>
   </head>
-  <body class="bg-gray-50">
-    <!-- CMS Selection Interface -->
-    <div id="cms-selection" class="min-h-screen flex items-center justify-center p-4">
-      <div class="max-w-4xl w-full">
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-gray-900 mb-4">VIT Bhopal Racing Team</h1>
-          <h2 class="text-2xl text-gray-600 mb-2">Content Management System</h2>
-          <p class="text-gray-500">Choose your preferred interface for managing website content</p>
-        </div>
-        
-        <div class="grid md:grid-cols-2 gap-8">
-          <!-- Simple CMS Option -->
-          <div class="cms-option bg-white rounded-lg shadow-lg p-8 border-2 border-transparent hover:border-blue-500" onclick="loadSimpleCMS()">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">Simple CMS</h3>
-              <p class="text-gray-600 mb-4">Easy-to-use interface for viewing and basic content management</p>
-              <ul class="text-sm text-gray-500 mb-6 space-y-1">
-                <li>✓ View all content types</li>
-                <li>✓ Browse and search data</li>
-                <li>✓ Export data as JSON</li>
-                <li>✓ Quick content overview</li>
-              </ul>
-              <button class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition-colors">
-                Launch Simple CMS
-              </button>
-            </div>
-          </div>
-          
-          <!-- Advanced CMS Option -->
-          <div class="cms-option bg-white rounded-lg shadow-lg p-8 border-2 border-transparent hover:border-blue-500" onclick="loadAdvancedCMS()">
-            <div class="text-center">
-              <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-              </div>
-              <h3 class="text-xl font-semibold text-gray-900 mb-3">Advanced CMS</h3>
-              <p class="text-gray-600 mb-4">Full-featured Decap CMS with complete editing capabilities</p>
-              <ul class="text-sm text-gray-500 mb-6 space-y-1">
-                <li>✓ Create, edit, and delete content</li>
-                <li>✓ Media management</li>
-                <li>✓ Rich text editing</li>
-                <li>✓ Git-based workflow</li>
-              </ul>
-              <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition-colors">
-                Launch Advanced CMS
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        <div class="text-center mt-8">
-          <p class="text-sm text-gray-500">
-            Need help? Check the 
-            <a href="guide.md" class="text-blue-600 hover:text-blue-800">CMS Guide</a>
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Advanced CMS Container -->
-    <div id="advanced-cms" style="display: none;">
-      <!-- Advanced CMS will be loaded here -->
-    </div>
-
+  <body>
+    <!-- Load Decap CMS - Using stable version -->
+    <script src="https://unpkg.com/decap-cms@3.0.14/dist/decap-cms.js"></script>
+    
+    <!-- Load Netlify Identity for production -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <!-- Simple CMS initialization without complex DOM manipulation -->
     <script>
-      function loadSimpleCMS() {
-        window.location.href = '/admin/simple-cms.html';
-      }
+      // Simple environment detection
+      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       
-      function loadAdvancedCMS() {
-        document.getElementById('cms-selection').style.display = 'none';
-        document.getElementById('advanced-cms').style.display = 'block';
+      if (isDev) {
+        console.log('Development mode: Using test backend');
+        window.CMS_MANUAL_INIT = true;
         
-        // Load the advanced CMS
-        loadDecapCMS();
-      }
-      
-      function loadDecapCMS() {
-        // Load Decap CMS
-        const script = document.createElement('script');
-        script.src = 'https://unpkg.com/decap-cms@3.0.14/dist/decap-cms.js';
-        script.onload = function() {
-          initializeDecapCMS();
-        };
-        document.head.appendChild(script);
-        
-        // Load Netlify Identity for production
-        const identityScript = document.createElement('script');
-        identityScript.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-        document.head.appendChild(identityScript);
-      }
-      
-      function initializeDecapCMS() {
-        // Simple environment detection
-        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        
-        if (isDev) {
-          console.log('Development mode: Using test backend');
-          window.CMS_MANUAL_INIT = true;
-          
-          // Simple initialization for development
+        // Simple initialization for development
+        document.addEventListener('DOMContentLoaded', function() {
           if (window.CMS) {
             window.CMS.init({
               config: {
@@ -134,32 +33,24 @@
               }
             });
           }
-        } else {
-          console.log('Production mode: Using Netlify Identity');
+        });
+      } else {
+        console.log('Production mode: Using Netlify Identity');
+        
+        // Production mode with Netlify Identity
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.on("init", user => {
+            if (!user) {
+              window.netlifyIdentity.on("login", () => {
+                document.location.href = "/admin/";
+              });
+            }
+          });
           
-          // Production mode with Netlify Identity
-          if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", user => {
-              if (!user) {
-                window.netlifyIdentity.on("login", () => {
-                  document.location.href = "/admin/";
-                });
-              }
-            });
-            
-            window.netlifyIdentity.on("logout", () => {
-              document.location.href = "/";
-            });
-          }
+          window.netlifyIdentity.on("logout", () => {
+            document.location.href = "/";
+          });
         }
-      }
-      
-      // Check URL parameters for direct access
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('mode') === 'advanced') {
-        loadAdvancedCMS();
-      } else if (urlParams.get('mode') === 'simple') {
-        loadSimpleCMS();
       }
     </script>
   </body>

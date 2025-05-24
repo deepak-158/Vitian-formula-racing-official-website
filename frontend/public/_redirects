@@ -1,8 +1,4 @@
 # Netlify redirects file
-# Admin interface should serve its own files - exclude from client-side routing
-/admin                /admin/index.html   200!
-/admin/               /admin/index.html   200!
-/admin/*              /admin/:splat       200!
-
-# Redirect all other routes to main index.html for client-side routing  
-/*                    /index.html         200
+# Redirect all routes to index.html for client-side routing
+/admin/*    /index.html   200
+/*          /index.html   200 
