@@ -61,9 +61,7 @@ function AppRoutes() {
         </div>
       </div>
     );
-  }
-
-  return (
+  }  return (
     <PageTransition>
       <Routes>
         {/* Public routes */}
