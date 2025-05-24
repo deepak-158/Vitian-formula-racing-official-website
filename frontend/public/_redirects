@@ -1,4 +1,0 @@
-# Netlify redirects file
-# Redirect all routes to index.html for client-side routing
-/admin/*    /index.html   200
-/*          /index.html   200 
