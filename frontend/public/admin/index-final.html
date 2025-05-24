@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VIT Bhopal Racing Team - Content Manager</title>
+  </head>
+  <body>
+    <!-- Simple loading indicator -->
+    <div id="loading" style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h2>Loading Content Management System...</h2>
+      <p>Please wait while the CMS loads.</p>
+    </div>
+
+    <!-- Load Decap CMS -->
+    <script src="https://unpkg.com/decap-cms@3.1.10/dist/decap-cms.js"></script>
+    
+    <!-- Load Netlify Identity for production -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <!-- CMS Initialization -->
+    <script>
+      // Hide loading indicator once CMS loads
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          const loadingEl = document.getElementById('loading');
+          if (loadingEl) loadingEl.style.display = 'none';
+        }, 2000);
+      });
+
+      // Detect environment
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      
+      if (isLocal) {
+        console.log('🚀 Starting CMS in development mode');
+        
+        // Development mode - use test backend
+        window.CMS_MANUAL_INIT = true;
+        
+        // Wait for DOM and CMS to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+          if (window.CMS) {
+            window.CMS.init({
+              config: {
+                backend: {
+                  name: 'test-repo'
+                },
+                load_config_file: true,
+                media_folder: 'public/images',
+                public_folder: '/images'
+              }
+            });
+            console.log('✅ CMS initialized in development mode');
+          }
+        });
+        
+      } else {
+        console.log('🌐 Starting CMS in production mode');
+        
+        // Production mode - use Netlify Identity
+        if (window.netlifyIdentity) {
+          window.netlifyIdentity.on("init", user => {
+            console.log('Netlify Identity initialized', user ? 'with user' : 'without user');
+            if (!user) {
+              window.netlifyIdentity.on("login", () => {
+                console.log('User logged in, redirecting...');
+                document.location.href = "/admin/";
+              });
+            }
+          });
+          
+          window.netlifyIdentity.on("logout", () => {
+            console.log('User logged out, redirecting...');
+            document.location.href = "/";
+          });
+        }
+      }
+    </script>
+  </body>
+</html>

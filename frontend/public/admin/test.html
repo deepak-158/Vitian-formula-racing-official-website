@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CMS Test</title>
+  </head>
+  <body>
+    <h1>CMS Configuration Test</h1>
+    <div id="status">Loading...</div>
+    
+    <script src="https://unpkg.com/decap-cms@3.1.10/dist/decap-cms.js"></script>
+    
+    <script>
+      const statusDiv = document.getElementById('status');
+      
+      // Log all steps
+      console.log('Testing CMS availability...');
+      statusDiv.innerHTML = 'Testing CMS availability...';
+      
+      // Wait for CMS to load
+      setTimeout(() => {
+        if (window.CMS) {
+          console.log('CMS is available');
+          statusDiv.innerHTML += '<br>✅ CMS is available';
+          
+          try {
+            // Test configuration loading
+            fetch('/admin/config.yml')
+              .then(response => response.text())
+              .then(configText => {
+                console.log('Config loaded:', configText.length, 'characters');
+                statusDiv.innerHTML += '<br>✅ Config file loaded (' + configText.length + ' chars)';
+                
+                // Try to initialize with minimal config
+                window.CMS.init({
+                  config: {
+                    backend: {
+                      name: 'test-repo'
+                    },
+                    load_config_file: false,
+                    media_folder: 'public/images',
+                    public_folder: '/images',
+                    collections: [
+                      {
+                        name: 'test',
+                        label: 'Test Collection',
+                        folder: 'data/test',
+                        create: true,
+                        fields: [
+                          { name: 'title', label: 'Title', widget: 'string' }
+                        ]
+                      }
+                    ]
+                  }
+                });
+                statusDiv.innerHTML += '<br>✅ CMS initialized with test config';
+                
+              })
+              .catch(error => {
+                console.error('Config load error:', error);
+                statusDiv.innerHTML += '<br>❌ Config load error: ' + error.message;
+              });
+              
+          } catch (error) {
+            console.error('CMS init error:', error);
+            statusDiv.innerHTML += '<br>❌ CMS init error: ' + error.message;
+          }
+          
+        } else {
+          console.error('CMS not available');
+          statusDiv.innerHTML += '<br>❌ CMS not available';
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
