@@ -1,39 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-// Updated data with our new SVG images
-const carouselImages = [
-  {
-    id: 1,
-    src: '/images/gallery/racing-team.svg',
-    alt: 'Racing team with vehicle',
-    caption: 'Our team with our latest racing car at the National Championship',
-  },
-  {
-    id: 2,
-    src: '/images/gallery/car-track.svg',
-    alt: 'Car on racetrack',
-    caption: 'Testing day at the local circuit - pushing our car to the limits',
-  },
-  {
-    id: 3,
-    src: '/images/gallery/engine-workshop.svg',
-    alt: 'Engine workshop',
-    caption: 'Our engineering team fine-tuning the engine for maximum performance',
-  },
-  {
-    id: 4,
-    src: '/images/gallery/team-celebration.svg',
-    alt: 'Team celebration',
-    caption: 'Celebrating our podium finish at the Regional Finals',
-  },
-];
+interface CarouselImage {
+  id: number;
+  src: string;
+  alt: string;
+  caption: string;
+}
 
 const PhotoCarousel: React.FC = () => {
+  const [carouselImages, setCarouselImages] = useState<CarouselImage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch carousel images from JSON
+  useEffect(() => {
+    const fetchCarouselImages = async () => {
+      try {
+        const response = await fetch('/data/gallery.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch carousel images');
+        }
+        const galleryData = await response.json();
+        
+        // Filter for featured/carousel images or use first 4 images
+        const featuredImages = galleryData.filter((img: any) => img.featured) || galleryData.slice(0, 4);
+        setCarouselImages(featuredImages);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load carousel images');
+        console.error('Error fetching carousel images:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCarouselImages();
+  }, []);
   
   // Auto-advance slides
   useEffect(() => {
+    if (carouselImages.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => 
         prevIndex === carouselImages.length - 1 ? 0 : prevIndex + 1
@@ -41,7 +49,7 @@ const PhotoCarousel: React.FC = () => {
     }, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [carouselImages.length]);
   
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => 
@@ -58,6 +66,32 @@ const PhotoCarousel: React.FC = () => {
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-gray-900">
+        <div className="container-custom">
+          <div className="relative h-96 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
+            <p className="text-white">Loading gallery...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || carouselImages.length === 0) {
+    return (
+      <section className="py-16 bg-gray-900">
+        <div className="container-custom">
+          <div className="relative h-96 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
+            <p className="text-white">
+              {error ? `Error: ${error}` : 'No images available for carousel'}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
   
   return (
     <section className="py-16 bg-gray-900">
@@ -115,4 +149,4 @@ const PhotoCarousel: React.FC = () => {
   );
 };
 
-export default PhotoCarousel; 
+export default PhotoCarousel;

@@ -37,49 +37,5 @@
     "isUpcoming": true,
     "registrationLink": "https://example.com/register",
     "registrationDeadline": "2024-02-01"
-  },
-  {
-    "id": "e3",
-    "title": "International Racing Expo",
-    "description": "Expo showcasing cutting-edge racing technologies and designs from around the world.",
-    "date": "2024-03-20",
-    "location": "International Convention Center",
-    "category": "expo",
-    "imageUrl": "/images/events/racing-expo.jpg",
-    "isUpcoming": true,
-    "registrationLink": "https://example.com/expo-register",
-    "registrationDeadline": "2024-03-15"
-  },
-  {
-    "id": "e4",
-    "title": "Summer Racing Championship",
-    "description": "The biggest racing event of the summer with teams competing from various universities.",
-    "date": "2024-07-05",
-    "location": "Summer Racing Track",
-    "category": "competition",
-    "imageUrl": "/images/events/summer-championship.jpg",
-    "isUpcoming": true,
-    "registrationLink": "https://example.com/summer-register",
-    "registrationDeadline": "2024-06-25"
-  },
-  {
-    "id": "e5",
-    "title": "Team Building Retreat",
-    "description": "A weekend retreat focused on team building activities and strategy planning.",
-    "date": "2023-10-15",
-    "location": "Mountain Resort",
-    "category": "team",
-    "imageUrl": "/images/events/team-retreat.jpg",
-    "isUpcoming": false
-  },
-  {
-    "id": "e6",
-    "title": "Sponsor Appreciation Gala",
-    "description": "Annual gala dinner to thank our sponsors and supporters.",
-    "date": "2023-12-10",
-    "location": "Grand Hotel Ballroom",
-    "category": "networking",
-    "imageUrl": "/images/events/sponsor-gala.jpg",
-    "isUpcoming": false
   }
 ] 
