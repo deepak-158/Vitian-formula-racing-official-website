@@ -1,0 +1,12 @@
+{
+  "id": "3",
+  "name": "Deepak Shukla",
+  "role": "Tech lead",
+  "bio": "Deepak is the backend brains and frontend flair of our online world — part developer, part designer, and full-time breaker of the internet (in a good way).",
+  "image_url": "/images/team/deepak.png",
+  "social_links": {
+    "linkedin": "https://www.linkedin.com/in/deepak-shukla-27a60628a/",
+    "github": "https://github.com/deepak-158",
+    "twitter": "https://x.com/DeepakS57541003"
+  }
+}

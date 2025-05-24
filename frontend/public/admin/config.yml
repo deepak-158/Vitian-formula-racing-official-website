@@ -1,196 +1,210 @@
 backend:
   name: git-gateway
   branch: main
-  repo: deepak-158/Vitian-formula-racing-official-website
 
-# Editorial workflow (optional - enables the draft → review → publish workflow)
-publish_mode: editorial_workflow
-
-# Media and public folders
 media_folder: "public/images"
 public_folder: "/images"
 
-# Collections define the structure for different content types
 collections:
-  - name: "data"
-    label: "Site Data"
-    files:
-      - name: "members"
-        label: "Team Members"
-        file: "src/data/members.json"
-        format: "json"
+  # ACHIEVEMENTS
+  - name: "achievements"
+    label: "Achievements"
+    folder: "data/achievements"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "date", label: "Date", widget: "datetime" }
+      - { name: "venue", label: "Venue", widget: "string" }
+      - { name: "category", label: "Category", widget: "select", options: ["competition", "innovation", "sustainability", "academic"] }
+      - { name: "imageUrl", label: "Image", widget: "image", media_folder: "achievements" }
+      - name: "additionalAwards"
+        label: "Additional Awards"
+        widget: "list"
         fields:
-          - label: "Members"
-            name: "members"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Role", name: "role", widget: "string" }
-              - { label: "Bio", name: "bio", widget: "text" }
-              - { label: "Image", name: "image_url", widget: "image" }
-              - label: "Social Links"
-                name: "social_links"
-                widget: "object"
-                fields:
-                  - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
-                  - { label: "Twitter", name: "twitter", widget: "string", required: false }
-                  - { label: "GitHub", name: "github", widget: "string", required: false }
-      
-      - name: "achievements"
-        label: "Achievements"
-        file: "src/data/achievements.json"
-        format: "json"
-        fields:
-          - label: "Achievements"
-            name: "achievements"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Date", name: "date", widget: "date" }
-              - { label: "Venue", name: "venue", widget: "string" }
-              - { label: "Category", name: "category", widget: "string" }
-              - { label: "Image", name: "imageUrl", widget: "image" }
-              - label: "Additional Awards"
-                name: "additionalAwards"
-                widget: "list"
-                required: false
-                field:
-                  label: "Award"
-                  name: "award"
-                  widget: "string"
+          - { name: "award", label: "Award", widget: "string" }
 
-      - name: "events"
-        label: "Events"
-        file: "src/data/events.json"
-        format: "json"
+  # EVENTS
+  - name: "events"
+    label: "Events"
+    folder: "data/events"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "date", label: "Date", widget: "datetime" }
+      - { name: "location", label: "Location", widget: "string" }
+      - { name: "category", label: "Category", widget: "select", options: ["competition", "workshop", "expo", "team", "networking"] }
+      - { name: "imageUrl", label: "Image", widget: "image" }
+      - { name: "isUpcoming", label: "Is Upcoming?", widget: "boolean", default: true }
+      - name: "results"
+        label: "Results"
+        widget: "list"
         fields:
-          - label: "Events"
-            name: "events"
+          - { name: "position", label: "Position", widget: "string" }
+          - { name: "team", label: "Team", widget: "string" }
+          - name: "achievements"
+            label: "Achievements"
             widget: "list"
             fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Date", name: "date", widget: "date" }
-              - { label: "Location", name: "location", widget: "string" }
-              - { label: "Category", name: "category", widget: "string" }
-              - { label: "Image", name: "imageUrl", widget: "image" }
-              - { label: "Is Upcoming", name: "isUpcoming", widget: "boolean", default: true }
-              - { label: "Registration Link", name: "registrationLink", widget: "string", required: false }
-              - { label: "Registration Deadline", name: "registrationDeadline", widget: "date", required: false }
-      
-      - name: "gallery"
-        label: "Gallery"
-        file: "src/data/gallery.json"
-        format: "json"
+              - { name: "achievement", label: "Achievement", widget: "string" }
+      - { name: "registrationLink", label: "Registration Link", widget: "string", required: false }
+      - { name: "registrationDeadline", label: "Registration Deadline", widget: "datetime", required: false }
+
+  # GALLERY
+  - name: "gallery"
+    label: "Gallery"
+    folder: "data/gallery"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "category", label: "Category", widget: "select", options: ["cars", "engineering", "competitions", "testing", "team", "academic"] }
+      - { name: "type", label: "Type", widget: "select", options: ["image", "video"] }
+      - { name: "url", label: "Media File", widget: "image", media_folder: "gallery" }
+      - { name: "alt", label: "Alt Text", widget: "string", required: false }
+      - { name: "thumbnail", label: "Thumbnail (for videos)", widget: "image", required: false }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "date", label: "Date", widget: "datetime" }
+
+  # MEMBERS
+  - name: "members"
+    label: "Team Members"
+    folder: "data/members"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "name", label: "Name", widget: "string" }
+      - { name: "role", label: "Role", widget: "string" }
+      - { name: "bio", label: "Bio", widget: "text" }
+      - { name: "image_url", label: "Profile Photo", widget: "image", media_folder: "team" }
+      - name: "social_links"
+        label: "Social Links"
+        widget: "object"
         fields:
-          - label: "Gallery Items"
-            name: "gallery"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Category", name: "category", widget: "string" }
-              - { label: "Type", name: "type", widget: "select", options: ["image", "video"] }
-              - { label: "URL", name: "url", widget: "image" }
-              - { label: "Alt Text", name: "alt", widget: "string", required: false }
-              - { label: "Thumbnail", name: "thumbnail", widget: "image", required: false }
-              - { label: "Description", name: "description", widget: "text", required: false }
-              - { label: "Date", name: "date", widget: "date" }
-      
-      - name: "merchandise"
-        label: "Merchandise"
-        file: "src/data/merchandise.json"
-        format: "json"
+          - { name: "linkedin", label: "LinkedIn", widget: "string", required: false }
+          - { name: "twitter", label: "Twitter", widget: "string", required: false }
+          - { name: "github", label: "GitHub", widget: "string", required: false }
+
+  # MERCHANDISE
+  - name: "merchandise"
+    label: "Merchandise"
+    folder: "data/merchandise"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "name", label: "Name", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "price", label: "Price", widget: "number" }
+      - { name: "category", label: "Category", widget: "select", options: ["apparel", "accessories", "collectibles"] }
+      - { name: "imageUrl", label: "Product Image", widget: "image" }
+      - name: "availableSizes"
+        label: "Available Sizes"
+        widget: "list"
+        required: false
         fields:
-          - label: "Merchandise Items"
-            name: "merchandise"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Price", name: "price", widget: "number" }
-              - { label: "Category", name: "category", widget: "string" }
-              - { label: "Image URL", name: "imageUrl", widget: "image" }
-              - label: "Available Sizes"
-                name: "availableSizes"
-                widget: "list"
-                required: false
-                field:
-                  label: "Size"
-                  name: "size"
-                  widget: "string"
-              - { label: "Stock Quantity", name: "stockQuantity", widget: "number" }
-              - { label: "Featured", name: "featured", widget: "boolean", default: false }
-      
-      - name: "racing-journey"
-        label: "Racing Journey"
-        file: "src/data/racing-journey.json"
-        format: "json"
+          - { name: "size", label: "Size", widget: "string" }
+      - { name: "stockQuantity", label: "Stock Quantity", widget: "number" }
+      - { name: "featured", label: "Featured?", widget: "boolean", default: false }
+
+  # NEWS
+  - name: "news"
+    label: "News"
+    folder: "data/news"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "content", label: "Content", widget: "markdown" }
+      - { name: "summary", label: "Summary", widget: "text" }
+      - { name: "date", label: "Date", widget: "datetime" }
+      - { name: "author", label: "Author", widget: "string" }
+      - { name: "category", label: "Category", widget: "string" }
+      - { name: "imageUrl", label: "Featured Image", widget: "image" }
+      - name: "tags"
+        label: "Tags"
+        widget: "list"
         fields:
-          - label: "Journey Milestones"
-            name: "racingJourney"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "number" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Image", name: "image", widget: "image" }
-              - { label: "Link", name: "link", widget: "string", required: false }
-      
-      - name: "sponsors"
-        label: "Sponsors"
-        file: "src/data/sponsors.json"
-        format: "json"
+          - { name: "tag", label: "Tag", widget: "string" }
+
+  # PROJECTS
+  - name: "projects"
+    label: "Projects"
+    folder: "data/projects"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "status", label: "Status", widget: "select", options: ["In Progress", "Completed", "Planning"] }
+      - { name: "start_date", label: "Start Date", widget: "datetime" }
+      - { name: "end_date", label: "End Date", widget: "datetime", required: false }
+      - { name: "image_url", label: "Project Image", widget: "image" }
+      - name: "members"
+        label: "Members"
+        widget: "list"
         fields:
-          - label: "Sponsors"
-            name: "sponsors"
-            widget: "list"
-            fields:
-              - { label: "ID", name: "id", widget: "string" }
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Logo", name: "logo", widget: "image" }
-              - label: "Tier"
-                name: "tier"
-                widget: "select"
-                options: ["platinum", "gold", "silver", "bronze", "partner"]
-              - { label: "Website", name: "website", widget: "string" }
-              - { label: "Description", name: "description", widget: "text", required: false }
-              - { label: "Since", name: "since", widget: "string", required: false }
-      
-      - name: "team-info"
-        label: "Team Info"
-        file: "src/data/team-info.json"
-        format: "json"
+          - { name: "role", label: "Role", widget: "string" }
+          - { name: "member_id", label: "Member ID", widget: "string" }
+
+  # RACING JOURNEY
+  - name: "racing_journey"
+    label: "Racing Journey"
+    folder: "data/racing-journey"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "number" }
+      - { name: "title", label: "Title", widget: "string" }
+      - { name: "description", label: "Description", widget: "text" }
+      - { name: "image", label: "Image", widget: "image" }
+      - { name: "link", label: "Link", widget: "string" }
+
+  # SPONSORS
+  - name: "sponsors"
+    label: "Sponsors"
+    folder: "data/sponsors"
+    create: true
+    fields:
+      - { name: "id", label: "ID", widget: "string" }
+      - { name: "name", label: "Name", widget: "string" }
+      - { name: "logo", label: "Logo", widget: "image", media_folder: "sponsors" }
+      - { name: "tier", label: "Tier", widget: "select", options: ["platinum", "gold", "silver", "bronze", "partner"] }
+      - { name: "website", label: "Website", widget: "string" }
+      - { name: "description", label: "Description", widget: "text", required: false }
+      - { name: "since", label: "Since", widget: "string" }
+
+  # TEAM INFO (corrected single file configuration)
+  - name: "team_info"
+    label: "Team Info"
+    files:
+      - name: "team_info"
+        label: "Team Information"
+        file: "data/team-info.json"
         fields:
-          - label: "Welcome Section"
-            name: "welcome"
+          - name: "welcome"
+            label: "Welcome Section"
             widget: "object"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - label: "Description"
-                name: "description"
-                widget: "list"
-                field:
-                  label: "Description Paragraph"
-                  name: "paragraph"
-                  widget: "text"
-              - { label: "Logo Image", name: "logoImage", widget: "image" }
-              - { label: "Button Text", name: "buttonText", widget: "string" }
-              - { label: "Button Link", name: "buttonLink", widget: "string" }
-          - label: "Mission Section"
-            name: "mission"
-            widget: "object"
-            fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Mission Statement", name: "statement", widget: "text" }
-              - label: "Values"
-                name: "values"
+              - { name: "title", label: "Title", widget: "string" }
+              - name: "description"
+                label: "Description"
                 widget: "list"
                 fields:
-                  - { label: "Title", name: "title", widget: "string" }
-                  - { label: "Description", name: "description", widget: "text" }
+                  - { name: "paragraph", label: "Paragraph", widget: "text" }
+              - { name: "logoImage", label: "Logo Image", widget: "image", media_folder: "logo" }
+              - { name: "buttonText", label: "Button Text", widget: "string" }
+              - { name: "buttonLink", label: "Button Link", widget: "string" }
+          - name: "mission"
+            label: "Mission Section"
+            widget: "object"
+            fields:
+              - { name: "title", label: "Title", widget: "string" }
+              - { name: "statement", label: "Statement", widget: "text" }
+              - name: "values"
+                label: "Values"
+                widget: "list"
+                fields:
+                  - { name: "title", label: "Title", widget: "string" }
+                  - { name: "description", label: "Description", widget: "text" }

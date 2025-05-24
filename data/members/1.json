@@ -1,0 +1,11 @@
+{
+  "id": "1",
+  "name": "M Ashwin",
+  "role": "Team Captain",
+  "bio": "John has been with the team for 5 years and leads our engineering efforts.",
+  "image_url": "https://randomuser.me/api/portraits/men/1.jpg",
+  "social_links": {
+    "linkedin": "https://linkedin.com/in/johndoe",
+    "twitter": "https://twitter.com/johndoe"
+  }
+}

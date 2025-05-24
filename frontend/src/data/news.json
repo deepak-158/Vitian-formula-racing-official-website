@@ -8,7 +8,11 @@
     "author": "Team Captain",
     "category": "competitions",
     "imageUrl": "/images/news/competition-results-2023.jpg",
-    "tags": ["competition", "awards", "achievement"]
+    "tags": [
+      "competition",
+      "awards",
+      "achievement"
+    ]
   },
   {
     "id": "2",
@@ -19,7 +23,11 @@
     "author": "Sponsorship Coordinator",
     "category": "partnerships",
     "imageUrl": "/images/news/techmotors-partnership.jpg",
-    "tags": ["sponsor", "partnership", "technology"]
+    "tags": [
+      "sponsor",
+      "partnership",
+      "technology"
+    ]
   },
   {
     "id": "3",
@@ -30,7 +38,12 @@
     "author": "Design Team Lead",
     "category": "design",
     "imageUrl": "/images/news/2024-car-unveiling.jpg",
-    "tags": ["design", "innovation", "racing car", "2024 model"]
+    "tags": [
+      "design",
+      "innovation",
+      "racing car",
+      "2024 model"
+    ]
   },
   {
     "id": "4",
@@ -41,6 +54,11 @@
     "author": "Education Coordinator",
     "category": "education",
     "imageUrl": "/images/news/workshop-announcement.jpg",
-    "tags": ["workshop", "education", "engineering", "student development"]
+    "tags": [
+      "workshop",
+      "education",
+      "engineering",
+      "student development"
+    ]
   }
-] 
+]

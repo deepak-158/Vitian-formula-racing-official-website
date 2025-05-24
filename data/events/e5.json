@@ -1,0 +1,10 @@
+{
+  "id": "e5",
+  "title": "Team Building Retreat",
+  "description": "A weekend retreat focused on team building activities and strategy planning.",
+  "date": "2023-10-15",
+  "location": "Mountain Resort",
+  "category": "team",
+  "imageUrl": "/images/events/team-retreat.jpg",
+  "isUpcoming": false
+}

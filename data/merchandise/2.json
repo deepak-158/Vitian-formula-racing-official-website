@@ -1,0 +1,18 @@
+{
+  "id": "2",
+  "name": "Racing Team T-Shirt",
+  "description": "Comfortable cotton t-shirt with the team logo on front and sponsors on back.",
+  "price": 24.99,
+  "category": "apparel",
+  "imageUrl": "/images/merchandise/team-tshirt.svg",
+  "availableSizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+  ],
+  "stockQuantity": 50,
+  "featured": true
+}

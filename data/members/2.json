@@ -1,0 +1,11 @@
+{
+  "id": "2",
+  "name": "checked",
+  "role": "Vice Captain",
+  "bio": "Jane specializes in computational fluid dynamics and has revolutionized our car design.",
+  "image_url": "https://randomuser.me/api/portraits/women/2.jpg",
+  "social_links": {
+    "linkedin": "https://linkedin.com/in/janesmith",
+    "github": "https://github.com/janesmith"
+  }
+}

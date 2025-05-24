@@ -1,0 +1,16 @@
+{
+  "id": "4",
+  "title": "Engineering Workshop Series Announcement",
+  "content": "We're launching a series of engineering workshops open to all engineering students at the university. These workshops will cover topics such as aerodynamics, chassis design, electrical systems, and project management in the context of racing car development. Team members will share their expertise and practical experience from working on our racing projects. The first workshop on aerodynamics will be held on May 20, 2024.",
+  "summary": "Team to host engineering workshops covering various aspects of racing car development.",
+  "date": "2024-04-05",
+  "author": "Education Coordinator",
+  "category": "education",
+  "imageUrl": "/images/news/workshop-announcement.jpg",
+  "tags": [
+    "workshop",
+    "education",
+    "engineering",
+    "student development"
+  ]
+}

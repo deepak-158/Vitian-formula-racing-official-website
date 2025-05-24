@@ -1,0 +1,34 @@
+{
+  "id": "e1",
+  "title": "checked",
+  "description": "Join us for our annual racing competition where teams from across the country compete for the championship title.",
+  "date": "2023-11-15",
+  "location": "National Racing Circuit",
+  "category": "competition",
+  "imageUrl": "/images/events/annual-racing-2023.jpg",
+  "isUpcoming": false,
+  "results": [
+    {
+      "position": "1st",
+      "team": "Speed Demons",
+      "achievements": [
+        "Fastest Lap",
+        "Best Team Coordination"
+      ]
+    },
+    {
+      "position": "2nd",
+      "team": "Velocity",
+      "achievements": [
+        "Most Innovative Design"
+      ]
+    },
+    {
+      "position": "3rd",
+      "team": "Rapid Racers",
+      "achievements": [
+        "Best Rookie Team"
+      ]
+    }
+  ]
+}

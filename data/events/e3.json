@@ -1,0 +1,12 @@
+{
+  "id": "e3",
+  "title": "International Racing Expo",
+  "description": "Expo showcasing cutting-edge racing technologies and designs from around the world.",
+  "date": "2024-03-20",
+  "location": "International Convention Center",
+  "category": "expo",
+  "imageUrl": "/images/events/racing-expo.jpg",
+  "isUpcoming": true,
+  "registrationLink": "https://example.com/expo-register",
+  "registrationDeadline": "2024-03-15"
+}

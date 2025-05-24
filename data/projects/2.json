@@ -1,0 +1,19 @@
+{
+  "id": "2",
+  "title": "Electric Powertrain",
+  "description": "Development of a new electric powertrain with improved efficiency and power delivery.",
+  "status": "Completed",
+  "start_date": "2023-06-10",
+  "end_date": "2023-12-20",
+  "image_url": "https://example.com/images/powertrain.jpg",
+  "members": [
+    {
+      "role": "Electrical Lead",
+      "member_id": "3"
+    },
+    {
+      "role": "Battery Specialist",
+      "member_id": "4"
+    }
+  ]
+}

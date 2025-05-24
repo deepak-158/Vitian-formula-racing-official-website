@@ -1,0 +1,10 @@
+{
+  "id": "8",
+  "name": "Water Bottle",
+  "description": "Stainless steel water bottle with team logo.",
+  "price": 14.99,
+  "category": "accessories",
+  "imageUrl": "/images/merchandise/water-bottle.svg",
+  "stockQuantity": 45,
+  "featured": false
+}

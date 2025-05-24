@@ -6,7 +6,13 @@
     "price": 89.99,
     "category": "apparel",
     "imageUrl": "/images/merchandise/racing-jacket.svg",
-    "availableSizes": ["S", "M", "L", "XL", "XXL"],
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "stockQuantity": 25,
     "featured": true
   },
@@ -17,7 +23,14 @@
     "price": 24.99,
     "category": "apparel",
     "imageUrl": "/images/merchandise/team-tshirt.svg",
-    "availableSizes": ["XS", "S", "M", "L", "XL", "XXL"],
+    "availableSizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
     "stockQuantity": 50,
     "featured": true
   },
@@ -48,7 +61,12 @@
     "price": 49.99,
     "category": "apparel",
     "imageUrl": "/images/merchandise/team-hoodie.svg",
-    "availableSizes": ["S", "M", "L", "XL"],
+    "availableSizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
     "stockQuantity": 30,
     "featured": false
   },
@@ -82,4 +100,4 @@
     "stockQuantity": 45,
     "featured": false
   }
-] 
+]

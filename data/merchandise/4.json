@@ -1,0 +1,10 @@
+{
+  "id": "4",
+  "name": "Car Model - 2023 Edition",
+  "description": "Detailed 1:18 scale model of our 2023 racing car.",
+  "price": 79.99,
+  "category": "collectibles",
+  "imageUrl": "/images/merchandise/car-model.svg",
+  "stockQuantity": 15,
+  "featured": true
+}

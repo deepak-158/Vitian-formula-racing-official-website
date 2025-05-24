@@ -1,0 +1,13 @@
+{
+  "id": "2",
+  "title": "Engineering Innovation Award 2023",
+  "description": "Received the Engineering Innovation Award for our novel suspension system design that significantly improved vehicle handling and performance.",
+  "date": "2023-11-15",
+  "venue": "University Engineering Conference",
+  "category": "innovation",
+  "imageUrl": "/images/achievements/innovation-award-2023.jpg",
+  "additionalAwards": [
+    "Best Engineering Design",
+    "Most Efficient Vehicle"
+  ]
+}

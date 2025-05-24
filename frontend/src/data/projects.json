@@ -8,8 +8,14 @@
     "end_date": "2024-07-30",
     "image_url": "https://example.com/images/car2024.jpg",
     "members": [
-      { "role": "Project Lead", "member_id": "1" },
-      { "role": "Aerodynamics Engineer", "member_id": "2" }
+      {
+        "role": "Project Lead",
+        "member_id": "1"
+      },
+      {
+        "role": "Aerodynamics Engineer",
+        "member_id": "2"
+      }
     ]
   },
   {
@@ -21,8 +27,14 @@
     "end_date": "2023-12-20",
     "image_url": "https://example.com/images/powertrain.jpg",
     "members": [
-      { "role": "Electrical Lead", "member_id": "3" },
-      { "role": "Battery Specialist", "member_id": "4" }
+      {
+        "role": "Electrical Lead",
+        "member_id": "3"
+      },
+      {
+        "role": "Battery Specialist",
+        "member_id": "4"
+      }
     ]
   },
   {
@@ -33,7 +45,10 @@
     "start_date": "2024-05-01",
     "image_url": "https://example.com/images/suspension.jpg",
     "members": [
-      { "role": "Mechanical Lead", "member_id": "4" }
+      {
+        "role": "Mechanical Lead",
+        "member_id": "4"
+      }
     ]
   }
-] 
+]

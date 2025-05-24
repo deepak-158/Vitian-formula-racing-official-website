@@ -22,7 +22,8 @@
     }
   },
   {
-    "id": "3",    "name": "Deepak Shukla",
+    "id": "3",
+    "name": "Deepak Shukla",
     "role": "Tech lead",
     "bio": "Deepak is the backend brains and frontend flair of our online world — part developer, part designer, and full-time breaker of the internet (in a good way).",
     "image_url": "/images/team/deepak.png",
@@ -43,4 +44,4 @@
       "twitter": "https://twitter.com/emmawilliams"
     }
   }
-] 
+]

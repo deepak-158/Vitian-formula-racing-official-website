@@ -1,0 +1,14 @@
+{
+  "id": "3",
+  "title": "Suspension System",
+  "description": "Custom suspension system designed for optimal handling and performance.",
+  "status": "Planning",
+  "start_date": "2024-05-01",
+  "image_url": "https://example.com/images/suspension.jpg",
+  "members": [
+    {
+      "role": "Mechanical Lead",
+      "member_id": "4"
+    }
+  ]
+}

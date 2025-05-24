@@ -12,17 +12,24 @@
       {
         "position": "1st",
         "team": "Speed Demons",
-        "achievements": ["Fastest Lap", "Best Team Coordination"]
+        "achievements": [
+          "Fastest Lap",
+          "Best Team Coordination"
+        ]
       },
       {
         "position": "2nd",
         "team": "Velocity",
-        "achievements": ["Most Innovative Design"]
+        "achievements": [
+          "Most Innovative Design"
+        ]
       },
       {
         "position": "3rd",
         "team": "Rapid Racers",
-        "achievements": ["Best Rookie Team"]
+        "achievements": [
+          "Best Rookie Team"
+        ]
       }
     ]
   },
@@ -82,4 +89,4 @@
     "imageUrl": "/images/events/sponsor-gala.jpg",
     "isUpcoming": false
   }
-] 
+]
