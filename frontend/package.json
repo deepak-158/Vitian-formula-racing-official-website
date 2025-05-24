@@ -34,7 +34,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && node scripts/copy-data-files.js",
-    "build-netlify": "CI=false NETLIFY=true react-scripts build && node scripts/copy-data-files.js || echo 'Build completed with warnings'",
+    "build-netlify": "cross-env CI=false NETLIFY=true react-scripts build && node scripts/copy-data-files.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server/server.js",
@@ -66,6 +66,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "concurrently": "^8.2.0",
+    "cross-env": "^7.0.3",
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17"
   }

@@ -10,7 +10,6 @@ import GalleryPage from './pages/GalleryPage';
 import MerchandisePage from './pages/MerchandisePage';
 
 // Admin pages
-// import LoginPage from './pages/admin/LoginPage'; // No longer needed
 import AdminDashboard from './pages/admin/AdminDashboard';
 import MembersEditorPage from './pages/admin/MembersEditorPage';
 import EventsEditorPage from './pages/admin/EventsEditorPage';
