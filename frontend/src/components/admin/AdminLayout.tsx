@@ -66,7 +66,7 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
-  const { logout } = useAuth();
+  const { logout, user, isAdmin } = useAuth();
   const location = useLocation();
   const [refreshing, setRefreshing] = useState(false);
   
@@ -94,12 +94,79 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
+
+  // Show access denied if user is not admin
+  if (!isAdmin) {
     return (
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '100vh',
+        background: '#f5f5f5' 
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '30px',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          textAlign: 'center' as const,
+          maxWidth: '400px'
+        }}>
+          <h2 style={{ color: '#c11212', marginBottom: '15px' }}>Access Denied</h2>
+          <p style={{ color: '#666', marginBottom: '20px' }}>
+            You do not have administrative privileges to access this area.
+          </p>
+          <button 
+            style={{
+              background: '#c11212',
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
     <div style={adminStyles.wrapper}>
       {/* Header */}
       <header style={adminStyles.header}>
         <h1>Racing Team CMS</h1>
-        <div style={adminStyles.headerActions}>          <button 
+        <div style={adminStyles.headerActions}>
+          {/* User info */}
+          {user && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              color: 'white',
+              fontSize: '14px'
+            }}>
+              <span>Welcome, {user.email}</span>
+              {user.user_metadata?.full_name && (
+                <span>({user.user_metadata.full_name})</span>
+              )}
+              <span style={{
+                background: 'rgba(255,255,255,0.2)',
+                padding: '2px 8px',
+                borderRadius: '12px',
+                fontSize: '12px'
+              }}>
+                Admin
+              </span>
+            </div>
+          )}
+          
+          <button 
             style={{
               ...adminStyles.logoutButton, 
               background: '#1a1a1a',

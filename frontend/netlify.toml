@@ -3,6 +3,23 @@
   command = "npm run build-netlify"
   functions = "netlify/functions"
 
+# Netlify Identity configuration
+[identity]
+  # Enable identity widget
+  enabled = true
+  
+  # External providers (optional)
+  external_providers = ["google", "github"]
+  
+  # Settings
+  [identity.settings]
+    # Require email confirmation
+    confirm_email = true
+    # Invite only mode - users can only signup with an invitation
+    invite_only = true
+    # Enable password recovery
+    enable_signup = false
+
 # Redirect all routes to index.html for client-side routing
 [[redirects]]
   from = "/*"
@@ -42,7 +59,7 @@
 [[headers]]
   for = "/*"
     [headers.values]
-    Content-Security-Policy = "default-src 'self' https://identity.netlify.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://randomuser.me https://*.netlify.app; connect-src 'self' https://api.netlify.com;"
+    Content-Security-Policy = "default-src 'self' https://identity.netlify.com https://unpkg.com; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://randomuser.me https://*.netlify.app; connect-src 'self' https://api.netlify.com https://identity.netlify.com;"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "same-origin"

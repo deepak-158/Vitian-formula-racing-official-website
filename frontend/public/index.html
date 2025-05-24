@@ -55,9 +55,35 @@
         window.netlifyIdentity.on("init", user => {
           if (!user) {
             window.netlifyIdentity.on("login", () => {
-              // Redirect to admin after login
-              window.location.href = "/admin/";
+              // Check if user has admin role and redirect accordingly
+              const currentUser = window.netlifyIdentity.currentUser();
+              const userRoles = currentUser?.app_metadata?.roles || [];
+              const isAdmin = userRoles.includes('admin') || 
+                            currentUser?.user_metadata?.admin === true;
+              
+              if (isAdmin) {
+                // Redirect to admin dashboard if user is admin
+                window.location.href = "/admin/";
+              } else {
+                // Show access denied message for non-admin users
+                alert("Access denied. You do not have administrative privileges.");
+                window.netlifyIdentity.logout();
+              }
             });
+          }
+        });
+        
+        // Listen for signup events
+        window.netlifyIdentity.on("signup", user => {
+          alert("Thank you for signing up! Your account is pending approval by an administrator.");
+          window.netlifyIdentity.logout(); // Log out immediately after signup
+        });
+        
+        // Handle errors
+        window.netlifyIdentity.on("error", err => {
+          console.error("Netlify Identity error:", err);
+          if (err.message.includes("invite")) {
+            alert("This site requires an invitation to sign up. Please contact an administrator.");
           }
         });
       }
