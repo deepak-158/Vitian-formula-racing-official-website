@@ -28,8 +28,8 @@
   
 # Add redirect for the admin data API endpoint
 [[redirects]]
-  from = "/api/admin/data/*"
-  to = "/.netlify/functions/get-data?dataType=:splat"
+  from = "/api/admin/data/:dataType"
+  to = "/.netlify/functions/get-data?dataType=:dataType"
   status = 200
 
 # Add redirect for the admin save-data API endpoint

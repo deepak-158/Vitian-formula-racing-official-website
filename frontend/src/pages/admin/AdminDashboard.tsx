@@ -97,71 +97,65 @@ const dataTypes = [
 const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState<{ label: string; count: number; icon: string }[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
+  const [error, setError] = useState<string | null>(null);  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setError(null);
         
         // Create an array to store our stats
         const statsData = [];
         
+        console.log('AdminDashboard: Starting to fetch data...');
+        
         // Fetch each data type and add its count to stats, with error handling for each
-        try {
-          const members = await adminCmsService.getMembers();
-          statsData.push({ label: 'Team Members', count: members.length, icon: '👥' });
-        } catch (e) {
-          console.error('Error fetching members:', e);
-          statsData.push({ label: 'Team Members', count: 0, icon: '👥' });
+        const dataTypes = [
+          { key: 'members', label: 'Team Members', icon: '👥', service: adminCmsService.getMembers },
+          { key: 'projects', label: 'Projects', icon: '🏎️', service: adminCmsService.getProjects },
+          { key: 'events', label: 'Events', icon: '📅', service: adminCmsService.getEvents },
+          { key: 'sponsors', label: 'Sponsors', icon: '🤝', service: adminCmsService.getSponsors },
+          { key: 'news', label: 'News Articles', icon: '📰', service: adminCmsService.getNews },
+          { key: 'gallery', label: 'Gallery Items', icon: '🖼️', service: adminCmsService.getGallery }
+        ];
+        
+        for (const dataType of dataTypes) {
+          try {
+            console.log(`AdminDashboard: Fetching ${dataType.key}...`);
+            const data = await dataType.service();
+            const count = Array.isArray(data) ? data.length : (data ? 1 : 0);
+            statsData.push({ 
+              label: dataType.label, 
+              count: count, 
+              icon: dataType.icon 
+            });
+            console.log(`AdminDashboard: Successfully loaded ${dataType.key} with ${count} items`);
+          } catch (e) {
+            console.error(`AdminDashboard: Error fetching ${dataType.key}:`, e);
+            statsData.push({ 
+              label: dataType.label, 
+              count: 0, 
+              icon: dataType.icon 
+            });
+          }
         }
         
-        try {
-          const projects = await adminCmsService.getProjects();
-          statsData.push({ label: 'Projects', count: projects.length, icon: '🏎️' });
-        } catch (e) {
-          console.error('Error fetching projects:', e);
-          statsData.push({ label: 'Projects', count: 0, icon: '🏎️' });
-        }
-        
-        try {
-          const events = await adminCmsService.getEvents();
-          statsData.push({ label: 'Events', count: events.length, icon: '📅' });
-        } catch (e) {
-          console.error('Error fetching events:', e);
-          statsData.push({ label: 'Events', count: 0, icon: '📅' });
-        }
-        
-        try {
-          const sponsors = await adminCmsService.getSponsors();
-          statsData.push({ label: 'Sponsors', count: sponsors.length, icon: '🤝' });
-        } catch (e) {
-          console.error('Error fetching sponsors:', e);
-          statsData.push({ label: 'Sponsors', count: 0, icon: '🤝' });
-        }
-        
-        // Add more items if you want to show more stats
-        try {
-          const news = await adminCmsService.getNews();
-          statsData.push({ label: 'News Articles', count: news.length, icon: '📰' });
-        } catch (e) {
-          console.error('Error fetching news:', e);
-          statsData.push({ label: 'News Articles', count: 0, icon: '📰' });
-        }
-        
-        try {
-          const gallery = await adminCmsService.getGallery();
-          statsData.push({ label: 'Gallery Items', count: gallery.length, icon: '🖼️' });
-        } catch (e) {
-          console.error('Error fetching gallery:', e);
-          statsData.push({ label: 'Gallery Items', count: 0, icon: '🖼️' });
-        }
-        
+        console.log('AdminDashboard: All data fetched, setting stats:', statsData);
         setStats(statsData);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Failed to load dashboard data. Please try again.');
+        console.error('AdminDashboard: Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. The admin panel is running in demo mode.');
         setLoading(false);
+        
+        // Set default stats even in error case
+        setStats([
+          { label: 'Team Members', count: 0, icon: '👥' },
+          { label: 'Projects', count: 0, icon: '🏎️' },
+          { label: 'Events', count: 0, icon: '📅' },
+          { label: 'Sponsors', count: 0, icon: '🤝' },
+          { label: 'News Articles', count: 0, icon: '📰' },
+          { label: 'Gallery Items', count: 0, icon: '🖼️' }
+        ]);
       }
     };
 

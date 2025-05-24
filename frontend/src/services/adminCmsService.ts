@@ -6,6 +6,34 @@ import {
 } from './dataService';
 import { downloadJsonFile, getTimestamp } from '../utils/dataRefresh';
 
+// Helper function to return empty data structure based on data type
+const getEmptyDataStructure = (dataType: string): any => {
+  switch (dataType) {
+    case 'members':
+      return [];
+    case 'events':
+      return [];
+    case 'projects':
+      return [];
+    case 'sponsors':
+      return [];
+    case 'news':
+      return [];
+    case 'gallery':
+      return [];
+    case 'achievements':
+      return [];
+    case 'merchandise':
+      return [];
+    case 'racing-journey':
+      return [];
+    case 'team-info':
+      return { teamName: '', foundingYear: new Date().getFullYear(), description: '' };
+    default:
+      return [];
+  }
+};
+
 // Helper to save JSON data to a file
 const saveJsonData = async (dataType: string, data: any): Promise<boolean> => {
   try {
@@ -39,32 +67,59 @@ export const getJsonDownloadUrl = (data: any): string => {
 };
 
 // Admin CMS service
-const adminCmsService = {
-  // Helper method to get data from API
+const adminCmsService = {  // Helper method to get data from API
   getData: async (dataType: string): Promise<any> => {
     try {
-      // First try our dedicated API endpoint
-      const apiResponse = await fetch(`/api/admin/data/${dataType}`);
-      if (apiResponse.ok) {
-        return await apiResponse.json();
+      console.log(`Attempting to load ${dataType} data...`);
+      
+      // First try our dedicated API endpoint (which redirects to Netlify function in production)
+      try {
+        const apiResponse = await fetch(`/api/admin/data/${dataType}`, {
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+        
+        if (apiResponse.ok) {
+          const data = await apiResponse.json();
+          console.log(`Successfully loaded ${dataType} data from API:`, data);
+          return data;
+        } else {
+          console.warn(`API response not ok for ${dataType}:`, apiResponse.status, apiResponse.statusText);
+        }
+      } catch (apiError) {
+        console.warn(`API request failed for ${dataType}:`, apiError);
       }
       
-      // If API fails, try src/data directly
-      const srcResponse = await fetch(`/src/data/${dataType}.json${getTimestamp()}`);
-      if (srcResponse.ok) {
-        return await srcResponse.json();
+      // If API fails, try the static data files
+      const fallbackUrls = [
+        `/data/${dataType}.json${getTimestamp()}`,
+        `/build/data/${dataType}.json${getTimestamp()}`,
+        `/src/data/${dataType}.json${getTimestamp()}`
+      ];
+      
+      for (const url of fallbackUrls) {
+        try {
+          console.log(`Trying fallback URL: ${url}`);
+          const response = await fetch(url);
+          if (response.ok) {
+            const data = await response.json();
+            console.log(`Successfully loaded ${dataType} data from ${url}:`, data);
+            return data;
+          }
+        } catch (fallbackError) {
+          console.warn(`Fallback failed for ${url}:`, fallbackError);
+        }
       }
       
-      // Last resort, try public/data
-      const publicResponse = await fetch(`/data/${dataType}.json${getTimestamp()}`);
-      if (publicResponse.ok) {
-        return await publicResponse.json();
-      }
+      // If all methods fail, return empty data based on type
+      console.warn(`All data loading methods failed for ${dataType}, returning empty data`);
+      return getEmptyDataStructure(dataType);
       
-      throw new Error(`Failed to load ${dataType} data from any source`);
     } catch (error) {
       console.error(`Error loading ${dataType} data:`, error);
-      throw error;
+      // Return empty data structure instead of throwing
+      return getEmptyDataStructure(dataType);
     }
   },
   
