@@ -1,2 +1,0 @@
-# This file ensures that Netlify retains the data directory
-/data/* /index.html 200
