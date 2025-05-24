@@ -1,6 +1,6 @@
 # Netlify redirects file
-# Netlify Identity redirect rules
-/.netlify/identity/* /.netlify/identity/:splat 200
+# Netlify Identity redirect rules removed - authentication no longer required
+# /.netlify/identity/* /.netlify/identity/:splat 200
 
 # API endpoints
 /api/data/* /.netlify/functions/:splat 200

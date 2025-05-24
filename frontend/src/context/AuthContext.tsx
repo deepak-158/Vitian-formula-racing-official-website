@@ -19,12 +19,16 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
-  user: null,
+  isAuthenticated: true, // Always authenticated now
+  user: {
+    id: 'admin-user',
+    email: 'admin@racing.team',
+    full_name: 'Admin User'
+  },
   login: () => {},
   logout: () => {},
   signup: () => {},
-  isAdmin: false,
+  isAdmin: true, // Always admin now
 });
 
 // Netlify Identity implementation with invite-only access

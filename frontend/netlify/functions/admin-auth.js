@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken'); // No longer needed since authentication is bypassed
 
 exports.handler = async (event, context) => {
   // Allow preflight requests
