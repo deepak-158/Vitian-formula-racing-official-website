@@ -4,53 +4,55 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VIT Bhopal Racing Team - Content Manager</title>
+    <!-- Include the Netlify CMS styles and scripts -->
+    <link href="https://unpkg.com/netlify-cms@^2.0.0/dist/cms.css" rel="stylesheet" />
   </head>
   <body>
-    <!-- Load Decap CMS - Using stable version -->
-    <script src="https://unpkg.com/decap-cms@3.0.14/dist/decap-cms.js"></script>
+    <!-- The main element where Netlify CMS will be mounted -->
+    <div id="nc-root"></div>
+
+    <!-- Include the Netlify CMS build -->
+    <script src="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js"></script>
     
-    <!-- Load Netlify Identity for production -->
+    <!-- Include the Identity Widget for authentication -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     
-    <!-- Simple CMS initialization without complex DOM manipulation -->
     <script>
-      // Simple environment detection
-      const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      
-      if (isDev) {
-        console.log('Development mode: Using test backend');
+      // Check if we're running on localhost and use local backend if so
+      if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
         window.CMS_MANUAL_INIT = true;
         
-        // Simple initialization for development
-        document.addEventListener('DOMContentLoaded', function() {
-          if (window.CMS) {
-            window.CMS.init({
-              config: {
-                backend: {
-                  name: 'test-repo'
-                },
-                load_config_file: true
-              }
-            });
-          }
-        });
-      } else {
-        console.log('Production mode: Using Netlify Identity');
-        
-        // Production mode with Netlify Identity
-        if (window.netlifyIdentity) {
-          window.netlifyIdentity.on("init", user => {
+        // Initialize the CMS manually with local storage backend for development
+        window.addEventListener('load', function() {
+          netlifyIdentity.on('init', function(user) {
             if (!user) {
-              window.netlifyIdentity.on("login", () => {
-                document.location.href = "/admin/";
-              });
+              netlifyIdentity.open('login');
             }
           });
           
-          window.netlifyIdentity.on("logout", () => {
-            document.location.href = "/";
+          netlifyIdentity.on('login', function() {
+            document.location.href = '/admin/';
           });
-        }
+          
+          netlifyIdentity.on('logout', function() {
+            document.location.href = '/';
+          });
+          
+          CMS.init({
+            config: {
+              backend: {
+                name: 'test-repo'
+              },
+              local_backend: true,
+              publish_mode: 'simple',
+              media_folder: 'public/images',
+              public_folder: '/images',
+              collections: [
+                // Collections will be loaded from config.yml
+              ]
+            }
+          });
+        });
       }
     </script>
   </body>
